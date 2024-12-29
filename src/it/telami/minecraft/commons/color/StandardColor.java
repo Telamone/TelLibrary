@@ -2,17 +2,17 @@ package it.telami.minecraft.commons.color;
 
 import it.telami.annotations.Optimized;
 
-final class TelColor implements Color {
-    TelColor () {
+final class StandardColor implements Color {
+    StandardColor () {
         throw new InstantiationError();
     }
 
     public ColorEngine getEngine () {
-        return ColorEngine.PREMIUM;
+        return ColorEngine.STANDARD;
     }
 
     @Optimized(tested = true)
-    public String fullTranslation (String s) {
+    public String fullTranslation (final String s) {
         return null;
     }
 
@@ -22,7 +22,9 @@ final class TelColor implements Color {
     }
 
     @Optimized(tested = true)
-    public void unsafeColor (final String s) {}
+    public void unsafeColor (final String s) {
+        throw new UnsupportedOperationException("This method is implemented only in the Premium version.");
+    }
 
     @Optimized(tested = true)
     public String hex (final String s) {
@@ -30,10 +32,6 @@ final class TelColor implements Color {
     }
     @Optimized(tested = true)
     public String gradient (final String s) {
-        return null;
-    }
-    @Optimized(tested = true)
-    public String tolerantGradient (final String s) {
         return null;
     }
 }
