@@ -19,7 +19,7 @@ import java.util.Queue;
  * @see ConcurrentOrderedQueue#ConcurrentOrderedQueue(Comparator, boolean)  ConcurrentOrderedQueue
  * @see ConcurrentOrderedQueue#switchProfile(boolean)
  */
-@Unstable(version = "1.0.2", problems = "Deadlock may happen in highly contention contexts! (Safe if used in single thread)")
+@Unstable(version = "1.0.2", problems = "Deadlock may happen in high contention contexts! (Safe if used in single thread)")
 public final class ConcurrentOrderedQueue<T> implements DataStructure, Queue<T> {
     /**
      * This {@link Queue} uses the given {@link Comparator comparator} for ordering
