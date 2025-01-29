@@ -9,12 +9,65 @@ import org.bukkit.inventory.ItemStack;
 public final class InventoryUtils {
     private InventoryUtils () {}
 
-    public static Inventory createInventory (final InventoryTemplate template) {
+    public static <T extends InventoryTemplate> Inventory createInventory (final T template, final int page, final Player... players) {
+        return switch (template) {
+            case DynamicInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventory(t, players[0]);
+            }
+            case DynamicPagedInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventory(t, page, players[0]);
+            }
+            case MultiDynamicInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventory(t, players);
+            }
+            case MultiDynamicPagedInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventory(t, page, players);
+            }
+            case PagedInventoryTemplate t -> createInventory(t, page);
+            case SimpleInventoryTemplate t -> createInventory(t);
+        };
+    }
+    public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
+        return switch (template) {
+            case DynamicInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventoryUnchecked(t, players[0]);
+            }
+            case DynamicPagedInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventoryUnchecked(t, page, players[0]);
+            }
+            case MultiDynamicInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventoryUnchecked(t, players);
+            }
+            case MultiDynamicPagedInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventoryUnchecked(t, page, players);
+            }
+            case PagedInventoryTemplate t -> createInventoryUnchecked(t, page);
+            case SimpleInventoryTemplate t -> createInventoryUnchecked(t);
+        };
+    }
+
+    public static Inventory createInventory (final SimpleInventoryTemplate template) {
         if (template == null)
             throw new IllegalArgumentException("Template cannot be null!");
         return null;
     }
-    public static Inventory createInventoryUnchecked (final InventoryTemplate template) {
+    public static Inventory createInventoryUnchecked (final SimpleInventoryTemplate template) {
         return null;
     }
     public static Inventory createInventory (

@@ -3,7 +3,7 @@ package it.telami.minecraft.bukkit.inventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public interface DynamicPagedInventoryTemplate extends BasicTemplate {
+public non-sealed interface DynamicPagedInventoryTemplate extends InventoryTemplate {
     String title ();
 
     int numberOfLines ();

@@ -2,7 +2,7 @@ package it.telami.minecraft.bukkit.inventory;
 
 import org.bukkit.inventory.ItemStack;
 
-public interface PagedInventoryTemplate extends BasicTemplate {
+public non-sealed interface PagedInventoryTemplate extends InventoryTemplate {
     String title ();
 
     int numberOfLines ();

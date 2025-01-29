@@ -7,7 +7,6 @@ public abstract class CacheComponent<K extends Serializable, SELF extends CacheC
 
     protected CacheComponent (final DataCache<K, SELF> cache, final K key) {}
 
-    protected abstract <LATEST> LATEST update ();
     protected abstract void onFetch ();
     protected abstract void onPush ();
     protected abstract void onClone ();

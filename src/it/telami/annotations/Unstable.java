@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Unstable {
     /**
-     * Defines the version that is planned to make this implementation stable.
+     * Defines the version where is planned to make this implementation stable.
      * @return The {@link String} representing the version in which this implementation is planned to be stable.
      * @author Dr4aKy
      * @since 1.0.0

@@ -23,7 +23,7 @@ import java.util.Queue;
 public final class ConcurrentOrderedQueue<T> implements DataStructure, Queue<T> {
     /**
      * This {@link Queue} uses the given {@link Comparator comparator} for ordering
-     * elements from the lower to the highest. <br>
+     * elements from the lowest to the highest. <br>
      * The {@link ConcurrentOrderedQueue#offer(Object)} never fails and all the operations
      * are thread safe, as specified by {@link ConcurrentOrderedQueue#isThreadSafe()}.
      * @param comparator the comparator used for ordering the elements

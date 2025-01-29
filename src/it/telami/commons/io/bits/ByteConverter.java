@@ -5,7 +5,7 @@ import java.io.Serializable;
 public final class ByteConverter {
     private ByteConverter () {}
 
-    public static byte[] toByteArray (final Serializable s) {
+    public static <S extends Serializable> byte[] toByteArray (final S s) {
         return null;
     }
 
@@ -13,7 +13,7 @@ public final class ByteConverter {
         return null;
     }
 
-    public static void copyInto (final byte[] b, final int offset, final Serializable s) {}
+    public static <S extends Serializable> void copyInto (final byte[] b, final int offset, final S s) {}
 
     public static <R extends Serializable> R toSerializable (final byte[] b, final int offset) {
         return null;

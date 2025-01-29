@@ -1,11 +1,16 @@
 package it.telami.minecraft.bukkit.inventory;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
-public interface InventoryTemplate extends BasicTemplate {
-    String title ();
-
-    int numberOfLines ();
-
-    ItemStack[] generateContent ();
+public sealed interface InventoryTemplate extends InventoryHolder permits
+        DynamicInventoryTemplate,
+        DynamicPagedInventoryTemplate,
+        MultiDynamicInventoryTemplate,
+        MultiDynamicPagedInventoryTemplate,
+        PagedInventoryTemplate,
+        SimpleInventoryTemplate {
+    default Inventory getInventory () {
+        return null;
+    }
 }
