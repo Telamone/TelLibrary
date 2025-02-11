@@ -37,26 +37,10 @@ public final class InventoryUtils {
     }
     public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
         return switch (template) {
-            case DynamicInventoryTemplate t -> {
-                if (players == null || players.length == 0)
-                    throw new IllegalArgumentException("Player cannot be null!");
-                yield createInventoryUnchecked(t, players[0]);
-            }
-            case DynamicPagedInventoryTemplate t -> {
-                if (players == null || players.length == 0)
-                    throw new IllegalArgumentException("Player cannot be null!");
-                yield createInventoryUnchecked(t, page, players[0]);
-            }
-            case MultiDynamicInventoryTemplate t -> {
-                if (players == null)
-                    throw new IllegalArgumentException("Players cannot be null!");
-                yield createInventoryUnchecked(t, players);
-            }
-            case MultiDynamicPagedInventoryTemplate t -> {
-                if (players == null)
-                    throw new IllegalArgumentException("Players cannot be null!");
-                yield createInventoryUnchecked(t, page, players);
-            }
+            case DynamicInventoryTemplate t -> createInventoryUnchecked(t, players[0]);
+            case DynamicPagedInventoryTemplate t ->  createInventoryUnchecked(t, page, players[0]);
+            case MultiDynamicInventoryTemplate t -> createInventoryUnchecked(t, players);
+            case MultiDynamicPagedInventoryTemplate t -> createInventoryUnchecked(t, page, players);
             case PagedInventoryTemplate t -> createInventoryUnchecked(t, page);
             case SimpleInventoryTemplate t -> createInventoryUnchecked(t);
         };
