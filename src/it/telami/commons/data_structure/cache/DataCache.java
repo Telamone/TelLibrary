@@ -3,11 +3,12 @@ package it.telami.commons.data_structure.cache;
 import it.telami.commons.data_structure.DataStructure;
 
 import java.io.Serializable;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public final class DataCache<K extends Serializable, V extends CacheComponent<K, V>> implements DataStructure {
+public final class DataCache<K extends Serializable, V extends CacheComponent<K, V>> implements DataStructure, AutoCloseable {
 
-    public DataCache (final DataHandler<K> dataHandler, final CacheType<K, V> type) {}
+    public DataCache (final ScheduledExecutorService scheduler, final DataHandler<K> dataHandler, final CacheType<K, V> type) {}
 
     public boolean isThreadSafe () {
         return true;
@@ -20,4 +21,6 @@ public final class DataCache<K extends Serializable, V extends CacheComponent<K,
     public V permanentLoad (final K key) {
         return null;
     }
+
+    public void close () {}
 }

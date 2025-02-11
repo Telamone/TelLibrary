@@ -12,8 +12,7 @@ public abstract class CacheComponent<K extends Serializable, SELF extends CacheC
     protected abstract void onClone ();
     protected abstract void onFree ();
 
-    public void scheduleRemoval (final long time, final TimeUnit unit) {}
-
+    public final void scheduleRemoval (final long time, final TimeUnit unit) {}
     protected final SELF clone () {
         return null;
     }
