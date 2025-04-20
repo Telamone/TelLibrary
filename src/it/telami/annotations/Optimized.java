@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * This method has been already optimized. <br>
  * If a performance enhancement is needed, a total rewrite should be considered!
- * @author Dr4aKy
+ * @author Telami
  * @since 1.0.0
  * @see Optimized#tested()
  */
@@ -17,5 +17,5 @@ public @interface Optimized {
      * Defines if this method has been already tested.
      * @return true if tests on this method have been made, otherwise false.
      */
-    boolean tested() default false;
+    boolean tested () default false;
 }

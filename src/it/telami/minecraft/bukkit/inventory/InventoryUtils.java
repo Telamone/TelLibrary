@@ -6,126 +6,210 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Class used for creating and handling inventories in various ways. <br>
+ * The creation take advantage of {@link InventoryTemplate}'s extensions.
+ * @author Telami
+ * @since 1.0.0
+ */
 public final class InventoryUtils {
     private InventoryUtils () {}
 
+    /**
+     * Create a new inventory given its template with its corresponding dependencies. <br>
+     * If the template doesn't depend on the given page or on the given players, then
+     * the given arguments are ignored. <br>
+     * If the template depend on a single player, then only the first players'
+     * element will be read.
+     * @param template the given template
+     * @param page the given page
+     * @param players the given players
+     * @return a new inventory
+     * @param <T> an {@link InventoryTemplate}'s extension type
+     * @author Telami
+     * @since 1.0.0
+     */
     public static <T extends InventoryTemplate> Inventory createInventory (final T template, final int page, final Player... players) {
-        return switch (template) {
-            case DynamicInventoryTemplate t -> {
-                if (players == null || players.length == 0)
-                    throw new IllegalArgumentException("Player cannot be null!");
-                yield createInventory(t, players[0]);
-            }
-            case DynamicPagedInventoryTemplate t -> {
-                if (players == null || players.length == 0)
-                    throw new IllegalArgumentException("Player cannot be null!");
-                yield createInventory(t, page, players[0]);
-            }
-            case MultiDynamicInventoryTemplate t -> {
-                if (players == null)
-                    throw new IllegalArgumentException("Players cannot be null!");
-                yield createInventory(t, players);
-            }
-            case MultiDynamicPagedInventoryTemplate t -> {
-                if (players == null)
-                    throw new IllegalArgumentException("Players cannot be null!");
-                yield createInventory(t, page, players);
-            }
-            case PagedInventoryTemplate t -> createInventory(t, page);
-            case SimpleInventoryTemplate t -> createInventory(t);
-        };
-    }
-    public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
-        return switch (template) {
-            case DynamicInventoryTemplate t -> createInventoryUnchecked(t, players[0]);
-            case DynamicPagedInventoryTemplate t ->  createInventoryUnchecked(t, page, players[0]);
-            case MultiDynamicInventoryTemplate t -> createInventoryUnchecked(t, players);
-            case MultiDynamicPagedInventoryTemplate t -> createInventoryUnchecked(t, page, players);
-            case PagedInventoryTemplate t -> createInventoryUnchecked(t, page);
-            case SimpleInventoryTemplate t -> createInventoryUnchecked(t);
-        };
-    }
-
-    public static Inventory createInventory (final SimpleInventoryTemplate template) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
         return null;
     }
+    /**
+     * Does the same as {@link InventoryUtils#createInventory(InventoryTemplate, int, Player...)},
+     * but doesn't perform any check.
+     * @param template the given template
+     * @param page the given page
+     * @param players the given players
+     * @return a new inventory
+     * @param <T> an {@link InventoryTemplate}'s extension type
+     * @author Telami
+     * @since 1.0.0
+     */
+    public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
+        return null;
+    }
+
+    /**
+     * Create a new inventory based on the given {@link SimpleInventoryTemplate template}.
+     * @param template the given template
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
+    public static Inventory createInventory (final SimpleInventoryTemplate template) {
+        return null;
+    }
+    /**
+     * Create a new inventory based on the given {@link SimpleInventoryTemplate template},
+     * but doesn't perform any check.
+     * @param template the given template
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (final SimpleInventoryTemplate template) {
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link DynamicInventoryTemplate template}
+     * and the given player.
+     * @param template the given template
+     * @param player the given player
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventory (
             final DynamicInventoryTemplate template,
             final Player player) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
-        if (player == null)
-            throw new IllegalArgumentException("Player cannot be null!");
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link DynamicInventoryTemplate template}
+     * and the given player, but doesn't perform any check.
+     * @param template the given template
+     * @param player the given player
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (
             final DynamicInventoryTemplate template,
             final Player player) {
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link MultiDynamicInventoryTemplate template}
+     * and the given players.
+     * @param template the given template
+     * @param players the given players
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventory (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
-        if (players == null)
-            throw new IllegalArgumentException("Players cannot be null!");
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link MultiDynamicInventoryTemplate template}
+     * and the given players, but doesn't perform any check.
+     * @param template the given template
+     * @param players the given players
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link PagedInventoryTemplate template}
+     * and the given page.
+     * @param template the given template
+     * @param page the given page
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventory (
             final PagedInventoryTemplate template,
             final int page) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
-        if (page < 0)
-            throw new IllegalArgumentException("Page cannot be negative!");
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link PagedInventoryTemplate template}
+     * and the given page, but doesn't perform any check.
+     * @param template the given template
+     * @param page the given page
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (
             final PagedInventoryTemplate template,
             final int page) {
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link DynamicPagedInventoryTemplate template},
+     * the given page and the given player.
+     * @param template the given template
+     * @param page the given page
+     * @param player the given player
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventory (
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
-        if (page < 0)
-            throw new IllegalArgumentException("Page cannot be negative!");
-        if (player == null)
-            throw new IllegalArgumentException("Player cannot be null!");
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link DynamicPagedInventoryTemplate template},
+     * the given page and the given player, but doesn't perform any check.
+     * @param template the given template
+     * @param page the given page
+     * @param player the given player
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link MultiDynamicPagedInventoryTemplate template},
+     * the given page and the given players.
+     * @param template the given template
+     * @param page the given page
+     * @param players the given players
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventory (
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
             final Player... players) {
-        if (template == null)
-            throw new IllegalArgumentException("Template cannot be null!");
-        if (page < 0)
-            throw new IllegalArgumentException("Page cannot be negative!");
-        if (players == null)
-            throw new IllegalArgumentException("Players cannot be null!");
         return null;
     }
+    /**
+     * Create a new inventory based on the given {@link MultiDynamicPagedInventoryTemplate template},
+     * the given page and the given players, but doesn't perform any check.
+     * @param template the given template
+     * @param page the given page
+     * @param players the given players
+     * @return a new inventory
+     * @author Telami
+     * @since 1.0.0
+     */
     public static Inventory createInventoryUnchecked (
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
@@ -156,6 +240,8 @@ public final class InventoryUtils {
      * @param items (as described in {@link InventoryUtils#fillRandomlyUnchecked(int[], long[], long, ItemStack[], Inventory) fillRandomlyUnchecked(...)})
      * @param inv (as described in {@link InventoryUtils#fillRandomlyUnchecked(int[], long[], long, ItemStack[], Inventory) fillRandomlyUnchecked(...)})
      * @return as described in {@link InventoryUtils#fillRandomlyUnchecked(int[], long[], long, ItemStack[], Inventory) fillRandomlyUnchecked(...)}
+     * @author Telami
+     * @since 1.0.0
      */
     public static int[] fillRandomly (
             final int[] slots,
@@ -163,29 +249,10 @@ public final class InventoryUtils {
             final long lastChance,
             final ItemStack[] items,
             final Inventory inv) {
-        if (slots == null)
-            throw new IllegalArgumentException("Slots cannot be null!");
-        if (chances == null)
-            throw new IllegalArgumentException("Chances cannot be null!");
-        if (items == null)
-            throw new IllegalArgumentException("Items cannot be null!");
-        if (inv == null)
-            throw new IllegalArgumentException("Inventory cannot be null!");
-        if (chances.length != items.length)
-            throw new IllegalArgumentException("The number of chances and items must be equal!");
-        if (items.length < slots.length)
-            throw new IllegalArgumentException("The number of items must be higher than, or equal to, the number of slots!");
-        if (slots.length == 0)
-            return new int[0];
-        for (final int slot : slots)
-            if (slot < 0 || slot >= inv.getSize())
-                throw new IllegalArgumentException("The slot must be higher than, or equal to, 0 and lower than the inventory capacity!");
-        if (chances.length < 2)
-            throw new IllegalArgumentException("The number of chances and items must be higher than 1!");
-        return fillRandomlyUnchecked(slots, chances, lastChance, items, inv);
+        return null;
     }
     /**
-     * Fills the slots (in range from 0 to {@link Inventory#getSize() inv.getSize()}) of a given
+     * Fill the slots (in range from 0 to {@link Inventory#getSize() inv.getSize()}) of a given
      * inventory with the given items chosen randomly in respect of the given chances. <p>
      * Note that, most of the time, having a single item with <b>very high</b> percentage in
      * respect to the others, since a single item <b>cannot</b> be inserted twice, will
@@ -247,6 +314,8 @@ public final class InventoryUtils {
      * @param items array containing the items that will be randomly chosen
      * @param inv the inventory to fill
      * @return an array containing the indexes of the chosen items.
+     * @author Telami
+     * @since 1.0.0
      */
     public static int[] fillRandomlyUnchecked (
             final int[] slots,
@@ -257,9 +326,10 @@ public final class InventoryUtils {
         return null;
     }
 
-    @PlannedForFuture(version = "1.1.0")
+    @PlannedForFuture
     public static ChancePair extractChances (final ConfigurationSection cs,
                                              final String inItemToPercentagePath) {
+        //When implementing this method, update the documentation above!
         throw new UnsupportedOperationException();
     }
     //Waiting for project Valhalla :)

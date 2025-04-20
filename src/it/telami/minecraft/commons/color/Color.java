@@ -10,43 +10,19 @@ import java.util.regex.Pattern;
  * @author Telami
  * @since 1.0.0
  */
-public sealed interface Color permits CommunityColor, StandardColor, TelColor {
+public sealed interface Color permits ColorImpl {
     String  colorPattern      = "&";
     Pattern hexPatter         = Pattern.compile("&#[a-fA-F0-9]{6}");
     Pattern gradientPattern   = Pattern.compile("<#[a-fA-F0-9]{6}>(?!<#[a-fA-F0-9]{6}>).*<#[a-fA-F0-9]{6}>");
+    Color   impl              = new ColorImpl();
 
-    //Here only for testing various implementations!
     /**
-     * Create a new instance basing on the given {@link ColorEngine engine}.
-     * @param engine the corresponding {@link ColorEngine engine}
-     * @return the engine's {@link Color Color} implementation
-     * @apiNote This method is here only for <b>testing purpose</b>! <br>
-     *          It's recommended to use {@link Color#getMostOptimized()} instead.
-     * @author Telami
-     * @since 1.0.0
+     * Get {@link Color Color}'s common implementation, always updated basing
+     * on your license.
+     * @return the common implementation
      */
-    static Color get (final ColorEngine engine) {
-        return switch (engine) {
-            case COMMUNITY -> new CommunityColor();
-            case STANDARD -> new StandardColor();
-            case PREMIUM -> new TelColor();
-        };
-    }
-    /**
-     * Create a new instance of the most optimized implementation.
-     * @see ColorEngine
-     * @return the most optimized {@link Color Color} implementation
-     * @author Telami
-     * @since 1.0.0
-     */
-    static Color getMostOptimized () {
-        try {
-            return new TelColor();
-        } catch (final InstantiationError _) {}
-        try {
-            return new StandardColor();
-        } catch (final InstantiationError _) {}
-        return new CommunityColor();
+    static Color getInstance () {
+        return impl;
     }
 
     /**

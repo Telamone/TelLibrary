@@ -2,8 +2,8 @@ package it.telami.minecraft.commons.color;
 
 import java.util.regex.Matcher;
 
-final class CommunityColor implements Color {
-    CommunityColor () {}
+final class ColorImpl implements Color {
+    ColorImpl () {}
 
     public ColorEngine getEngine () {
         return ColorEngine.COMMUNITY;
