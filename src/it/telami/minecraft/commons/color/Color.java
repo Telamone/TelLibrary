@@ -20,6 +20,8 @@ public sealed interface Color permits ColorImpl {
      * Get {@link Color Color}'s common implementation, always updated basing
      * on your license.
      * @return the common implementation
+     * @author Telami
+     * @since 1.0.0
      */
     static Color getInstance () {
         return impl;
@@ -47,6 +49,8 @@ public sealed interface Color permits ColorImpl {
      * Replace all the '&' characters with '§' <b><i>IN</i></b>
      * the given string.
      * @param s the given string
+     * @author Telami
+     * @since 1.0.0
      */
     void unsafeColor (final String s);
 

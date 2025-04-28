@@ -16,6 +16,8 @@ public @interface Optimized {
     /**
      * Defines if this method has been already tested.
      * @return true if tests on this method have been made, otherwise false.
+     * @author Telami
+     * @since 1.0.0
      */
     boolean tested () default false;
 }

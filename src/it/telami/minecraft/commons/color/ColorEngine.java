@@ -8,6 +8,7 @@ package it.telami.minecraft.commons.color;
  * @author Telami
  * @since 1.0.0
  */
+@SuppressWarnings("JavadocDeclaration")
 public enum ColorEngine {
     /**
      * Uses community formatting techniques. <br>
@@ -16,16 +17,22 @@ public enum ColorEngine {
      * The documentation of {@link ColorEngine#STANDARD} and {@link ColorEngine#PREMIUM}
      * will be updated every time a new version of this implementation gets approved
      * and tested!
+     * @author Telami
+     * @since 1.0.0
      */
     COMMUNITY,
     /**
      * Functions properly only when a valid license is active. <br>
      * It's slightly faster in hex and faster in gradients formatting than the {@link ColorEngine#COMMUNITY} version.
+     * @author Telami
+     * @since 1.0.0
      */
     STANDARD,
     /**
      * Functions properly only when a valid license is active. <br>
      * It's MUCH faster in hex and gradients formatting than the {@link ColorEngine#STANDARD} version.
+     * @author Telami
+     * @since 1.0.0
      */
     PREMIUM
 }
