@@ -1,3 +1,11 @@
+# ❗ Important ❗
+
+This is the <b>public API</b>! <br>
+The code is <i>currently private</i> and will be published as soon the architecture hosting it is ready. 🖥 <br>
+That being said, enjoy the features! 👾 <br>
+
+<br>
+
 # 📦 TelLibrary: High-Performance and Thread-Safe Java Library
 
 TelLibrary is a <i>general purpose</i> <b>low-level</b> Java library built for
