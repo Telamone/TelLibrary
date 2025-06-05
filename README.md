@@ -6,7 +6,7 @@ That being said, enjoy the features! 👾 <br>
 
 <br>
 
-# 📦 TelLibrary: High-Performance and Thread-Safe Java Library
+# 📦 TelLibrary: High-Performance and Thread-Safe
 
 TelLibrary is a <i>general purpose</i> <b>low-level</b> Java library built for
 <b>extreme throughput</b> and <b>thread safety</b>. 🔥 <br>
