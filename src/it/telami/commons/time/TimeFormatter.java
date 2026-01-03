@@ -34,7 +34,9 @@ public final class TimeFormatter {
      * @author Telami
      * @since 1.0.0
      */
-    public TimeFormatter () {}
+    public TimeFormatter () {
+        //Hidden implementation...
+    }
     /**
      * Create a {@link TimeFormatter time formatter} using the given time representations.
      * @param second the given second representation
@@ -60,7 +62,9 @@ public final class TimeFormatter {
             final String day,
             final String days,
             final String fromNumberSeparator,
-            final String fromNextSeparator) {}
+            final String fromNextSeparator) {
+        //Hidden implementation...
+    }
 
     /**
      * Create a {@link TimeFormatter time formatter} from a given {@link Configuration configuration},
@@ -72,7 +76,9 @@ public final class TimeFormatter {
      * @since 1.0.0
      */
     //Bukkit
-    public TimeFormatter (final Configuration config, final String path) {}
+    public TimeFormatter (final Configuration config, final String path) {
+        //Hidden implementation...
+    }
     /**
      * Create a {@link TimeFormatter time formatter} from a given {@link Toml configuration},
      * eventually using the default values if the given path derivatives are not found as specified in
@@ -83,7 +89,9 @@ public final class TimeFormatter {
      * @since 1.0.0
      */
     //Velocity
-    public TimeFormatter (final Toml config, final String path) {}
+    public TimeFormatter (final Toml config, final String path) {
+        //Hidden implementation...
+    }
 
     /**
      * Format the given time in a coherent way as described by {@link TimeFormatter}.
@@ -93,6 +101,23 @@ public final class TimeFormatter {
      * @since 1.0.0
      */
     public String format (long millis) {
+        //Hidden implementation...
+        return null;
+    }
+
+    /**
+     * Translate the given seconds using the sequent form:
+     * <b><i>HH:MM:SS</i></b>. <br>
+     * The result has ALWAYS a fixed length of <b>8</b>. <br>
+     * The single digit numbers are filled with a leading zero. <br>
+     * This method is <b>totally unbranched</b>!
+     * @param seconds the current seconds count
+     * @return a formatted clock with the sequent form: <b><i>HH:MM:SS</i></b>
+     * @author Telami
+     * @since 1.0.1
+     */
+    public static String fixedHMSClock (final long seconds) {
+        //Hidden implementation...
         return null;
     }
 }

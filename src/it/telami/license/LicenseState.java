@@ -14,6 +14,18 @@ package it.telami.license;
 public enum LicenseState {
     /**
      * {@link LicenseState State} used for indicating
+     * that the complete initialization of the license
+     * took too much time. <br>
+     * The time could be defined through the dedicated
+     * startup flag like this: <br>
+     * {@code -Define_LicenseMillisTimeOut=10000} <br>
+     * The default value is indeed 10 seconds.
+     * @author Telami
+     * @since 1.0.0
+     */
+    TIMED_OUT,
+    /**
+     * {@link LicenseState State} used for indicating
      * that the license has not been communicated
      * by the server.
      * @author Telami
@@ -37,18 +49,6 @@ public enum LicenseState {
      * @since 1.0.0
      */
     FRAGMENTED,
-    /**
-     * {@link LicenseState State} used for indicating
-     * that the complete initialization of the license
-     * took too much time. <br>
-     * The time could be defined through the dedicated
-     * startup flag like this: <br>
-     * {@code -DLicenseMillisTimeOut=10000} <br>
-     * The default value is indeed 10 seconds.
-     * @author Telami
-     * @since 1.0.0
-     */
-    TIMED_OUT,
     /**
      * {@link LicenseState State} used for indicating
      * that the license has been initialized correctly.

@@ -10,21 +10,21 @@ import java.util.regex.Pattern;
  * @author Telami
  * @since 1.0.0
  */
-public sealed interface Color permits ColorImpl {
+public interface Color {
     String  colorPattern      = "&";
     Pattern hexPatter         = Pattern.compile("&#[a-fA-F0-9]{6}");
     Pattern gradientPattern   = Pattern.compile("<#[a-fA-F0-9]{6}>(?!<#[a-fA-F0-9]{6}>).*<#[a-fA-F0-9]{6}>");
-    Color   impl              = new ColorImpl();
+    Color   commonInstance    = new ColorImpl();
 
     /**
-     * Get {@link Color Color}'s common implementation, always updated basing
-     * on your license.
+     * Get a new {@link Color Color}'s implementation, always updated basing
+     * on the active license.
      * @return the common implementation
      * @author Telami
      * @since 1.0.0
      */
-    static Color getInstance () {
-        return impl;
+    static Color newInstance () {
+        return new ColorImpl();
     }
 
     /**
@@ -43,16 +43,6 @@ public sealed interface Color permits ColorImpl {
      * @since 1.0.0
      */
     String color (final String s);
-
-    /**
-     * (Supported only in the <b>{@link ColorEngine#PREMIUM Premium}</b> implementation) <p>
-     * Replace all the '&' characters with '§' <b><i>IN</i></b>
-     * the given string.
-     * @param s the given string
-     * @author Telami
-     * @since 1.0.0
-     */
-    void unsafeColor (final String s);
 
     /**
      * Apply hex formatting to the given string containing the '&#xxxxxx' pattern.
@@ -84,9 +74,7 @@ public sealed interface Color permits ColorImpl {
      * @author Telami
      * @since 1.0.0
      */
-    default String tolerantGradient (final String s) {
-        return gradient(s);
-    }
+    String tolerantGradient (final String s);
 
     /**
      * Completely format the given string.

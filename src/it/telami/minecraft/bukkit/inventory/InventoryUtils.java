@@ -30,6 +30,7 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static <T extends InventoryTemplate> Inventory createInventory (final T template, final int page, final Player... players) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -44,6 +45,7 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
+        //Hidden implementation...
         return null;
     }
 
@@ -55,6 +57,7 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static Inventory createInventory (final SimpleInventoryTemplate template) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -66,6 +69,7 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static Inventory createInventoryUnchecked (final SimpleInventoryTemplate template) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -80,6 +84,7 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final DynamicInventoryTemplate template,
             final Player player) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -94,6 +99,7 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final DynamicInventoryTemplate template,
             final Player player) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -108,6 +114,7 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -122,6 +129,7 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -136,6 +144,7 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final PagedInventoryTemplate template,
             final int page) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -150,6 +159,7 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final PagedInventoryTemplate template,
             final int page) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -166,6 +176,7 @@ public final class InventoryUtils {
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -182,6 +193,7 @@ public final class InventoryUtils {
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -198,6 +210,7 @@ public final class InventoryUtils {
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
             final Player... players) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -214,6 +227,7 @@ public final class InventoryUtils {
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
             final Player... players) {
+        //Hidden implementation...
         return null;
     }
 
@@ -249,6 +263,7 @@ public final class InventoryUtils {
             final long lastChance,
             final ItemStack[] items,
             final Inventory inv) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -323,6 +338,7 @@ public final class InventoryUtils {
             final long lastChance,
             final ItemStack[] items,
             final Inventory inv) {
+        //Hidden implementation...
         return null;
     }
 

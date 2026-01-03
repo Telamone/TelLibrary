@@ -7,7 +7,7 @@ import java.util.concurrent.locks.Lock;
 
 /**
  * A {@link Lock} based class that handles thread unlocking as LIFO. <br>
- * The {@link Thread} that fails to acquire during {@link CompletelyUnfairLock#lock()}
+ * The {@link Thread} that fails to acquire during {@link CompletelyUnfairSpinLock#lock()}
  * starts spinning waiting for the lock until a given number of spins is reached,
  * then parks immediately.
  * @author Telami
@@ -20,7 +20,9 @@ public final class CompletelyUnfairSpinLock implements Lock, AutoCloseable {
      * @author Telami
      * @since 1.0.0
      */
-    public CompletelyUnfairSpinLock () {}
+    public CompletelyUnfairSpinLock () {
+        this(Runtime.getRuntime().availableProcessors());
+    }
     /**
      * Constructor used for specifying the spin cycles.
      * @see CompletelyUnfairSpinLock
@@ -29,19 +31,26 @@ public final class CompletelyUnfairSpinLock implements Lock, AutoCloseable {
      * @author Telami
      * @since 1.0.0
      */
-    public CompletelyUnfairSpinLock (final int spinCycles) {}
+    public CompletelyUnfairSpinLock (final int spinCycles) {
+        //Hidden implementation...
+    }
 
     public boolean tryLock () {
+        //Hidden implementation...
         return false;
     }
-    public void lock () {}
+    public void lock () {
+        //Hidden implementation...
+    }
     /**
      * Forcefully lock, this might break everything, pay attention using this! <br>
      * This method has the same memory effects as {@link VarHandle#setOpaque(Object...) setOpaque}.
      * @author Telami
      * @since 1.0.0
      */
-    public void forceLock () {}
+    public void forceLock () {
+        //Hidden implementation...
+    }
 
     /**
      * Check if this lock is currently locked. <br>
@@ -51,6 +60,7 @@ public final class CompletelyUnfairSpinLock implements Lock, AutoCloseable {
      * @return {@code true} if locked, {@code false} otherwise
      */
     public boolean isLocked () {
+        //Hidden implementation...
         return false;
     }
 
@@ -61,11 +71,16 @@ public final class CompletelyUnfairSpinLock implements Lock, AutoCloseable {
      * @since 1.0.0
      */
     public boolean tryWait () {
+        //Hidden implementation...
         return false;
     }
 
-    public void unlock () {}
-    public void close () {}
+    public void unlock () {
+        //Hidden implementation...
+    }
+    public void close () {
+        //Hidden implementation...
+    }
 
 
     public boolean tryLock (final long time, final TimeUnit unit) {

@@ -19,7 +19,9 @@ public final class Censorship {
      * @author Telami
      * @since 1.0.0
      */
-    public Censorship (final Set<String> toCensor) {}
+    public Censorship (final Set<String> toCensor) {
+        //Hidden implementation...
+    }
 
     /**
      * Censor the given message replacing the words with
@@ -30,6 +32,7 @@ public final class Censorship {
      * @since 1.0.0
      */
     public String censor (final String s) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -42,6 +45,7 @@ public final class Censorship {
      * @since 1.0.0
      */
     public String censor (final String s, final Function<String, String> replacement) {
+        //Hidden implementation...
         return null;
     }
 
@@ -57,6 +61,7 @@ public final class Censorship {
      * @since 1.0.0
      */
     public boolean mayContain (final String s) {
+        //Hidden implementation...
         return false;
     }
 }

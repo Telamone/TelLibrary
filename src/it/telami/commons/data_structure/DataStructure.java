@@ -9,8 +9,9 @@ import it.telami.commons.data_structure.cache.Cache;
  * are and how to use them reading carefully their documentation.
  * @author Telami
  * @since 1.0.0
- * @see it.telami.commons.data_structure.queue.ConcurrentOrderedQueue ConcurrentOrderedQueue
- * @see Cache Cache
+ * @see it.telami.commons.data_structure.queue.ConcurrentQueue ConcurrentQueue
+ * @see Cache DataCache
+ * @see it.telami.commons.data_structure.buffer.NetworkBuffer NetworkBuffer
  */
 public interface DataStructure {
     /**

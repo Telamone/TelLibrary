@@ -20,7 +20,9 @@ import java.util.function.Function;
  */
 public abstract class License {
     @LibraryOnly
-    protected License (final String name) {}
+    protected License (final String name) {
+        //Hidden implementation...
+    }
 
     /**
      * Return the given name's corresponding {@link License license}.
@@ -30,6 +32,7 @@ public abstract class License {
      * @since 1.0.0
      */
     public static License getByName (final String name) {
+        //Hidden implementation...
         return null;
     }
 
@@ -44,11 +47,13 @@ public abstract class License {
      * @since 1.0.0
      */
     public static List<License> getAll () {
+        //Hidden implementation...
         return null;
     }
 
     @LibraryOnly
     protected static synchronized boolean setGenerator (final Function<String, License> generator) {
+        //Hidden implementation...
         return false;
     }
 
@@ -59,6 +64,7 @@ public abstract class License {
      * @since 1.0.0
      */
     public String getName () {
+        //Hidden implementation...
         return null;
     }
 
@@ -77,9 +83,46 @@ public abstract class License {
      * So always be sure your license have been paid ahead of time if temporary, it
      * can be also updated during runtime, so no need to close the program during
      * these operations.
+     * @apiNote If {@link License#isTemporary() isTemporary()} returns {@code false},
+     *          then this method returns the instant this license has been activated.
      * @return the instant this license will expire
      * @author Telami
-     * @since 1.0.0
+     * @since 1.0.1
      */
     public abstract Instant getExpirationTime ();
+
+    /**
+     * Return whether this license is temporary or not.
+     * @return {@code true} if this license has an expiration, {@code false} otherwise
+     * @author Telami
+     * @since 1.0.1
+     */
+    public abstract boolean isTemporary ();
+
+    /**
+     * Wait all the dependencies, obtained using the given names,
+     * to finish their initialization. <br>
+     * The result of their initialization may be successful or not.
+     * @param names the given dependencies' names
+     * @return a {@link CompletableFuture} that completes when all
+     *         the dependencies finish their initialization
+     * @author Telami
+     * @since 1.0.1
+     */
+    public abstract CompletableFuture<Void> awaitDependencies (final String... names);
+    /**
+     * Wait all the dependencies, obtained using the given names,
+     * to finish their initialization. <br>
+     * The result of their initialization may be successful or not
+     * and that will influence the result of the returned
+     * {@link CompletableFuture}.
+     * @param names the given dependencies' names
+     * @return a {@link CompletableFuture} that completes when all
+     *         the dependencies finish their initialization, using
+     *         as result the worst {@link LicenseState state} found
+     *         in the dependencies
+     * @author Telami
+     * @since 1.0.1
+     */
+    public abstract CompletableFuture<LicenseState> awaitDependenciesWithResult (final String... names);
 }

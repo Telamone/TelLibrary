@@ -1,11 +1,12 @@
 package it.telami.commons.data_structure.cache;
 
+import it.telami.commons.concurrency.thread.ContentionHandler;
 import it.telami.commons.data_structure.DataStructure;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * Handle dynamically key-value associations through a fast, efficient
+ * Handle dynamic key-value associations through a fast, efficient
  * and GC friendly cache.
  * <p>
  * Pros: <ul>
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * <li>introduction of the concept of <b>state</b>, that may confuse
  * a little initially (briefly explained in {@link CacheStateExtractor});</li>
  * <li>bad use of the resources (not following what the documentation
- * suggest) can lead to memory leaks (as for every other cache, but
+ * suggests) can lead to memory leaks (as for every other cache, but
  * it's worth specifying).</li>
  * </ul>
  * </p>
@@ -53,17 +54,20 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * @param reConstructor see {@link CacheReConstructor}
      * @param removalHandler see {@link CacheRemovalHandler}
      * @throws IllegalArgumentException if one of the first 3 arguments is 0 (except
-     *                                  'initialCapacity') or negative
+     *                                  for 'initialCapacity') or negative
      * @author Telami
      * @since 1.0.0
      */
     public Cache (final int initialCapacity,
                   final float loadFactor,
                   final int concurrencyLevel,
+                  final ContentionHandler handler,
                   final CacheLoader<K, V> loader,
                   final CacheStateExtractor<V, V_state> stateExtractor,
                   final CacheReConstructor<V, V_state> reConstructor,
-                  final CacheRemovalHandler<K, V_state> removalHandler) {}
+                  final CacheRemovalHandler<K, V_state> removalHandler) {
+        //Hidden implementation...
+    }
 
     public boolean isThreadSafe () {
         return true;
@@ -78,11 +82,13 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * cache in case of necessity, so it can decide to free a value
      * that was marked in precedence as permanent.
      * @param key the given key
-     * @return the result of the {@link CacheLoader loader}
+     * @return the result of the {@link CacheLoader loader}, or the
+     *         already existing value
      * @author Telami
      * @since 1.0.0
      */
     public V load (final K key) {
+        //Hidden implementation...
         return null;
     }
     /**
@@ -91,28 +97,32 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * remains loaded for the given time per unit. <br>
      * It will only 'try' to ensure because, as the {@link Cache} states, the GC is
      * free to manage this cache in case of necessity, so it can decide to free a
-     * value that has not already reached its defined time-to-live.
+     * value that has not already reached its defined time-to-live or maintain it
+     * if there is no clue in removing it.
      * @param key the given key
      * @param time the given time
      * @param unit the given unit
-     * @return the result of the {@link CacheLoader loader}
+     * @return the result of the {@link CacheLoader loader}, or the already existing value
      * @author Telami
      * @since 1.0.0
      */
     public V load (final K key,
                    final long time,
                    final TimeUnit unit) {
+        //Hidden implementation...
         return null;
     }
 
     /**
-     * Check if the given key is present in the {@link Cache cache}.
+     * Check if the given key is present in the {@link Cache cache}. <br>
+     * This doesn't affect the removal timer, if present.
      * @param key the given key
      * @return {@code true} if the given key is present in the {@link Cache cache}, {@code false} otherwise
      * @author Telami
      * @since 1.0.0
      */
     public boolean contains (final K key) {
+        //Hidden implementation...
         return false;
     }
 
@@ -131,19 +141,18 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
     public boolean forceTime (final K key,
                               final long time,
                               final TimeUnit unit) {
+        //Hidden implementation...
         return false;
     }
 
     /**
-     * Try to invalidate the value if it's present and return if it has been
-     * invalidated by this or another thread.
+     * Invalidate the given key's corresponding value.
      * @param key the given key
-     * @return {@code true} if the value is now invalid, {@code false} otherwise
      * @author Telami
      * @since 1.0.0
      */
-    public boolean invalidate (final K key) {
-        return false;
+    public void invalidate (final K key) {
+        //Hidden implementation...
     }
 
     /**
@@ -151,7 +160,9 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * @author Telami
      * @since 1.0.0
      */
-    public void clear () {}
+    public void clear () {
+        //Hidden implementation...
+    }
 
     /**
      * Check if this {@link Cache cache} is still currently open.
@@ -160,7 +171,11 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * @since 1.0.0
      */
     public boolean isOpen () {
+        //Hidden implementation...
         return false;
     }
-    public void close () {}
+
+    public void close () {
+        //Hidden implementation...
+    }
 }

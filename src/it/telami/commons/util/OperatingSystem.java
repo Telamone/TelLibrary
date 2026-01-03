@@ -6,13 +6,13 @@ package it.telami.commons.util;
  * @since 1.0.0
  */
 public enum OperatingSystem {
-    //Not in CAPS for using '.getName()' in a clean way!
-    Windows,
-    Linux,
-    Mac,
-    Unknown;
+    UNKNOWN,
+    WINDOWS,
+    LINUX,
+    MAC;
 
     public static final OperatingSystem currentOS;
+    public static final String currentArchitecture;
     public static final String currentVersion;
     static {
         final String osn;
@@ -23,11 +23,12 @@ public enum OperatingSystem {
                         .indexOf(' ')
                         & 0x7fffffff, osn
                         .length()))) {
-            case "windows" -> Windows;
-            case "linux" -> Linux;
-            case "macos", "mac" -> Mac;
-            default -> Unknown;
+            case "windows" -> WINDOWS;
+            case "linux" -> LINUX;
+            case "macos", "mac" -> MAC;
+            default -> UNKNOWN;
         };
+        currentArchitecture = System.getProperty("os.arch");
         currentVersion = System.getProperty("os.version");
     }
 }

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-@Plugin(id = "TelLib", name = "TelLib", version = "1.0.0", authors = {"Telami"})
+@Plugin(id = "tellib", name = "TelLib", version = "1.0.0", authors = {"Telami"})
 public final class Main {
     @Inject
     public Main (final ProxyServer proxy, final Logger logger, @DataDirectory final Path pluginsDirectory) {}

@@ -16,16 +16,21 @@ public final class CompletelyUnfairLock implements Lock, AutoCloseable {
     public CompletelyUnfairLock () {}
 
     public boolean tryLock () {
+        //Hidden implementation...
         return false;
     }
-    public void lock () {}
+    public void lock () {
+        //Hidden implementation...
+    }
     /**
      * Forcefully lock, this might break everything, pay attention using this! <br>
      * This method has the same memory effects as {@link VarHandle#setOpaque(Object...) setOpaque}.
      * @author Telami
      * @since 1.0.0
      */
-    public void forceLock () {}
+    public void forceLock () {
+        //Hidden implementation...
+    }
 
     /**
      * Check if this lock is currently locked. <br>
@@ -35,6 +40,7 @@ public final class CompletelyUnfairLock implements Lock, AutoCloseable {
      * @return {@code true} if locked, {@code false} otherwise
      */
     public boolean isLocked () {
+        //Hidden implementation...
         return false;
     }
 
@@ -45,11 +51,16 @@ public final class CompletelyUnfairLock implements Lock, AutoCloseable {
      * @since 1.0.0
      */
     public boolean tryWait () {
+        //Hidden implementation...
         return false;
     }
 
-    public void unlock () {}
-    public void close () {}
+    public void unlock () {
+        //Hidden implementation...
+    }
+    public void close () {
+        //Hidden implementation...
+    }
 
 
     public boolean tryLock (final long time, final TimeUnit unit) {
