@@ -18,16 +18,13 @@ import java.util.concurrent.TimeUnit;
  * <li>can invalidate manually values;</li>
  * <li>very fast, as a very high amount of effort and engineering has
  * been put in the process of making this cache;</li>
- * <li>strictly defined through 4 interfaces: {@link CacheLoader},
- * {@link CacheStateExtractor}, {@link CacheReConstructor} and
- * {@link CacheRemovalHandler} (the only one that is <b>not</b>
+ * <li>strictly defined through 2 interfaces: {@link CacheLoader}
+ * and {@link CacheRemovalHandler} (the only one that is <b>not</b>
  * optional is the loader).</li>
  * </ul>
  * </p>
  * <p>
  * Cons: <ul>
- * <li>introduction of the concept of <b>state</b>, that may confuse
- * a little initially (briefly explained in {@link CacheStateExtractor});</li>
  * <li>bad use of the resources (not following what the documentation
  * suggests) can lead to memory leaks (as for every other cache, but
  * it's worth specifying).</li>
@@ -39,19 +36,16 @@ import java.util.concurrent.TimeUnit;
  * is used".
  * @param <K> key's type
  * @param <V> value's type
- * @param <V_state> value's state's type
  * @author Telami
  * @since 1.0.0
  */
-public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable {
+public final class Cache<K, V> implements DataStructure, AutoCloseable {
     /**
      * Create a new {@link Cache}. <br>
      * @param initialCapacity the initial table capacity
      * @param loadFactor the initial table density
      * @param concurrencyLevel the estimated number of concurrency updating threads
      * @param loader see {@link CacheLoader}
-     * @param stateExtractor see {@link CacheStateExtractor}
-     * @param reConstructor see {@link CacheReConstructor}
      * @param removalHandler see {@link CacheRemovalHandler}
      * @throws IllegalArgumentException if one of the first 3 arguments is 0 (except
      *                                  for 'initialCapacity') or negative
@@ -63,9 +57,7 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
                   final int concurrencyLevel,
                   final ContentionHandler handler,
                   final CacheLoader<K, V> loader,
-                  final CacheStateExtractor<V, V_state> stateExtractor,
-                  final CacheReConstructor<V, V_state> reConstructor,
-                  final CacheRemovalHandler<K, V_state> removalHandler) {
+                  final CacheRemovalHandler<K, V> removalHandler) {
         //Hidden implementation...
     }
 
@@ -83,7 +75,8 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * that was marked in precedence as permanent.
      * @param key the given key
      * @return the result of the {@link CacheLoader loader}, or the
-     *         already existing value
+     *         already existing value, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
      * @author Telami
      * @since 1.0.0
      */
@@ -102,7 +95,9 @@ public final class Cache<K, V, V_state> implements DataStructure, AutoCloseable 
      * @param key the given key
      * @param time the given time
      * @param unit the given unit
-     * @return the result of the {@link CacheLoader loader}, or the already existing value
+     * @return the result of the {@link CacheLoader loader}, or
+     *         the already existing value, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
      * @author Telami
      * @since 1.0.0
      */

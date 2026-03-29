@@ -7,10 +7,16 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public final class Unrestricted {
-    public static final int ADDRESS_SIZE = 0;
-    public static final int CACHE_LINE_SIZE = 0;
-
     private Unrestricted () {}
+
+    public static int getAddressSize () {
+        //Hidden implementation...
+        return 0;
+    }
+    public static int getDataCacheLineFlushSize () {
+        //Hidden implementation...
+        return 0;
+    }
 
     public static Stream<VarHandle> extractVars (final Stream<Class<?>> classStream) {
         //Hidden implementation...
@@ -33,6 +39,13 @@ public final class Unrestricted {
         //Hidden implementation...
     }
 
+    public static Class<?> findClass (
+            final String name) throws
+            ClassNotFoundException,
+            IllegalAccessException {
+        //Hidden implementation...
+        return null;
+    }
     public static VarHandle findVarHandle (
             final Class<?> clazz,
             final String name,

@@ -4,16 +4,14 @@ package it.telami.commons.data_structure.cache;
  * Used by {@link Cache} for triggering an action on the removal of
  * a value. <br>
  * The removal's reason is described by {@link Reason}. <br>
- * It's given the state instead of the value itself because it may
- * have been entirely removed from memory.
  * @param <K> key's type
- * @param <V_state> value's state's type
+ * @param <V> value's type
  * @author Telami
  * @since 1.0.0
  */
 @FunctionalInterface
 @SuppressWarnings("JavadocDeclaration")
-public interface CacheRemovalHandler<K, V_state> {
+public interface CacheRemovalHandler<K, V> {
     /**
      * Represent the reason that caused the {@link CacheRemovalHandler}
      * to be triggered.
@@ -54,9 +52,9 @@ public interface CacheRemovalHandler<K, V_state> {
      * Triggered when a value is removed from the cache, as defined by {@link CacheRemovalHandler}.
      * @param reason see {@link Reason}
      * @param key the disassociated key
-     * @param state value's state
+     * @param value the value
      * @author Telami
      * @since 1.0.0
      */
-    void onRemove (final Reason reason, final K key, final V_state state);
+    void onRemove (final Reason reason, final K key, final V value);
 }

@@ -7,6 +7,7 @@ package it.telami.commons.concurrency.thread;
  */
 public final class ThreadConstants {
     public static final Thread DEAD_VIRTUAL_THREAD = Thread.ofVirtual().start(() -> {});
+    public static final Thread DEAD_VIRTUAL_THREAD_2 = Thread.ofVirtual().start(() -> {});
 
     private ThreadConstants () {}
 }

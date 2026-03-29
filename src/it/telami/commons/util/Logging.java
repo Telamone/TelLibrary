@@ -20,6 +20,20 @@ public final class Logging {
     public static final Logger minecraftLogger = newAlignedLogger("TelLib", defaultClock, true, _ -> {});
 
     /**
+     * Try enabling the ANSI support if the current {@link OperatingSystem}
+     * is equal to {@link OperatingSystem#WINDOWS WINDOWS}.
+     * @return {@code true} if the current {@link OperatingSystem}
+     *         is equal to {@link OperatingSystem#WINDOWS WINDOWS}
+     *         and if ANSI have been enabled, {@code false} otherwise
+     * @author Telami
+     * @since 1.0.2
+     */
+    public static boolean enableANSI () {
+        //Hidden implementation...
+        return false;
+    }
+
+    /**
      * Return a new aligned {@link Logger logger} basing on the given name and the given clock and
      * minecraft color codes decoding choice. <br>
      * The formatted results produced by this logger will be consumed by the given 'resultConsumer'.

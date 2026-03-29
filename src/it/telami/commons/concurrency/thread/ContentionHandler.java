@@ -26,7 +26,7 @@ public enum ContentionHandler {
      * @author Telami
      * @since 1.0.1
      */
-    HIGH_THROUGHPUT(192, 12, 0L),
+    HIGH_THROUGHPUT(96, 12, 0L),
     /**
      * Try to obtain the highest throughput and lowest
      * latency while avoiding high processor usage.

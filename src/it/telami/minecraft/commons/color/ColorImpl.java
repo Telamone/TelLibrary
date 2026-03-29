@@ -19,10 +19,12 @@ final class ColorImpl implements Color {
         final Matcher matcher = hexPatter.matcher(s);
         while (matcher.find()) {
             final String group = matcher.group();
-            matcher.appendReplacement(buffer, "§x§"
+            matcher.appendReplacement(buffer, ("§x§"
                     + group.charAt(2) + '§' + group.charAt(3) + '§'
                     + group.charAt(4) + '§' + group.charAt(5) + '§'
-                    + group.charAt(6) + '§' + group.charAt(7));
+                    + group.charAt(6) + '§' + group.charAt(7))
+                    .replaceAll("\\\\", "\\\\\\\\")
+                    .replaceAll("\\$", "\\\\\\$"));
         }
         return matcher.appendTail(buffer).toString();
     }
@@ -80,7 +82,9 @@ final class ColorImpl implements Color {
                     .append(String.format("%02X", g2))
                     .append(String.format("%02X", b2))
                     .append(chars[chars.length - 1]);
-            matcher.appendReplacement(buffer, hex(sb.toString()));
+            matcher.appendReplacement(buffer, hex(sb.toString())
+                    .replaceAll("\\\\", "\\\\\\\\")
+                    .replaceAll("\\$", "\\\\\\$"));
         }
         return matcher.appendTail(buffer).toString();
     }

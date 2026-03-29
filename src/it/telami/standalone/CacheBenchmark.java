@@ -124,6 +124,7 @@ final class CacheBenchmark implements Benchmark {
                 .ticker(Ticker.systemTicker())
                 .build(CacheLoader.from(s -> {
                     misses.getAndIncrement();
+                    assert s != null;
                     return s.toUpperCase();
                 }));
         //Operation-Discarding-Prevention
@@ -154,7 +155,7 @@ final class CacheBenchmark implements Benchmark {
                 .append(" ns   ");
         bob.append(subBob)
                 .repeat(' ', EL - subBob.length())
-                .append("|   Hit ration: ~")
+                .append("|   Hit ratio: ~")
                 .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                 .append("%\n");
         Arrays.stream(randomInvalidations)
@@ -195,7 +196,7 @@ final class CacheBenchmark implements Benchmark {
                 .append(" ns   ");
         bob.append(subBob)
                 .repeat(' ', EL - subBob.length())
-                .append("|   Hit ration: ~")
+                .append("|   Hit ratio: ~")
                 .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                 .append("%\n");
         cache.invalidateAll();
@@ -256,7 +257,7 @@ final class CacheBenchmark implements Benchmark {
                 .append(" ns   ");
         bob.append(subBob)
                 .repeat(' ', EL - subBob.length())
-                .append("|   Hit ration: ~")
+                .append("|   Hit ratio: ~")
                 .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                 .append("%\n");
         Arrays.stream(randomInvalidations)
@@ -297,7 +298,7 @@ final class CacheBenchmark implements Benchmark {
                 .append(" ns   ");
         bob.append(subBob)
                 .repeat(' ', EL - subBob.length())
-                .append("|   Hit ration: ~")
+                .append("|   Hit ratio: ~")
                 .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                 .append("%\n");
         cache.invalidateAll();
@@ -318,7 +319,7 @@ final class CacheBenchmark implements Benchmark {
                                         final long time,
                                         final TimeUnit unit) {
         final AtomicInteger misses = new AtomicInteger();
-        try (final Cache<String, String, ?> cache = new Cache<>(
+        try (final Cache<String, String> cache = new Cache<>(
                 measurementCycles,
                 1f,
                 Runtime.getRuntime().availableProcessors(),
@@ -327,8 +328,6 @@ final class CacheBenchmark implements Benchmark {
                     misses.getAndIncrement();
                     return s.toUpperCase();
                 },
-                null,
-                null,
                 null)) {
             //Operation-Discarding-Prevention
             int i;
@@ -339,7 +338,7 @@ final class CacheBenchmark implements Benchmark {
                     state.counter.getAndIncrement();
             }
             for (int j = i; j < totalCycles; j++)
-                odp += cache.load(cases[j]).hashCode();
+                odp += cache.load(cases[j], time, unit).hashCode();
             for (final String randomInvalidation : randomInvalidations)
                 cache.invalidate(randomInvalidation);
             misses.setPlain(0);
@@ -358,7 +357,7 @@ final class CacheBenchmark implements Benchmark {
                     .append(" ns   ");
             bob.append(subBob)
                     .repeat(' ', EL - subBob.length())
-                    .append("|   Hit ration: ~")
+                    .append("|   Hit ratio: ~")
                     .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                     .append("%\n");
             Arrays.stream(randomInvalidations)
@@ -399,7 +398,7 @@ final class CacheBenchmark implements Benchmark {
                     .append(" ns   ");
             bob.append(subBob)
                     .repeat(' ', EL - subBob.length())
-                    .append("|   Hit ration: ~")
+                    .append("|   Hit ratio: ~")
                     .append((int) (((measurementCycles - misses.get()) / (float) measurementCycles) * 100))
                     .append("%\n");
         }

@@ -10,7 +10,7 @@ import it.telami.commons.data_structure.cache.Cache;
  * @author Telami
  * @since 1.0.0
  * @see it.telami.commons.data_structure.queue.ConcurrentQueue ConcurrentQueue
- * @see Cache DataCache
+ * @see Cache Cache
  * @see it.telami.commons.data_structure.buffer.NetworkBuffer NetworkBuffer
  */
 public interface DataStructure {

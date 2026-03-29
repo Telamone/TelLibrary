@@ -6,9 +6,9 @@ import java.util.function.BooleanSupplier;
 
 /**
  * This class provides {@link Thread current thread}'s internal variable <b>'secondary
- * seed'</b> handling, offering many function like efficient spin-yielding, parking
+ * seed'</b> handling, offering many functions like efficient spin-yielding, parking
  * and so on. <br>
- * The main function are {@link ThreadSecondarySeedHandler#getSecondarySeed()} and
+ * The main functions are {@link ThreadSecondarySeedHandler#getSecondarySeed()} and
  * {@link ThreadSecondarySeedHandler#setSecondarySeed(int)} for manipulating it
  * manually. <br>
  * Always observe the effects that this manipulation might have on the program!
@@ -81,7 +81,7 @@ public final class ThreadSecondarySeedHandler {
     }
 
     /**
-     * Spin basing on the given {@link ContentionHandler handler}, until
+     * Spin, basing on the given {@link ContentionHandler handler}, until
      * the given {@link BooleanSupplier condition} return {@code false}. <br>
      * If side effects are required, it's recommended to use
      * {@link java.util.concurrent.atomic atomics} and their respective
@@ -90,10 +90,7 @@ public final class ThreadSecondarySeedHandler {
      * methods inside and outside the given condition.
      * @param handler the given {@link ContentionHandler handler}
      * @param condition the given {@link BooleanSupplier condition}
-     * @apiNote This method rely on {@link ThreadSecondarySeedHandler#spinOrYieldHeuristically()}. <br>
-     *          Personal comment: <i>"<s>I don't know why, but</s> this method is built on a pattern recognized
-     *          (at least in my tests) by the JIT and optimized in a special way, performing better than
-     *          if the same spinning is done in-place!"</i>
+     * @apiNote This method rely on {@link ThreadSecondarySeedHandler#spinOrYieldHeuristically()}.
      * @author Telami
      * @since 1.0.1
      */

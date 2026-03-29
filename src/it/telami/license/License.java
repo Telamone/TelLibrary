@@ -4,21 +4,31 @@ import it.telami.annotations.LibraryOnly;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
  * Class used for communicating with this Library's unique
  * License System, exclusive only to properly selected and
  * verified products. <br>
- * Every license has its own {@link String name} that is
- * used for interacting with it. <br>
+ * Every license has its own {@link License#getName() name}
+ * and {@link License#requestVersion(String) version} that
+ * are used for interacting with it. <br>
  * The main goal of this is to synchronize the product tasks
  * with its license initialization.
  * @author Telami
  * @since 1.0.0
  */
 public abstract class License {
+    @LibraryOnly
+    public static final String libLicenseName = "TelLib";
+    @LibraryOnly
+    public static final String version = "1.0.2";
+
+    protected static final Map<String, License> licenses = new ConcurrentHashMap<>();
+
     @LibraryOnly
     protected License (final String name) {
         //Hidden implementation...
@@ -67,6 +77,19 @@ public abstract class License {
         //Hidden implementation...
         return null;
     }
+
+    /**
+     * Return this {@link License license} instance after ensuring that the
+     * correct license version has been submitted. <br>
+     * This method <b>must necessarily</b> be called before {@link License#getState()}.
+     * @param version the given version
+     * @return this {@link License license} instance
+     * @apiNote This method has no effect if this license's {@link License#getName() name}
+     *          is equal to <i>TelLib</i>
+     * @author Telami
+     * @since 1.0.2
+     */
+    public abstract License requestVersion (final String version);
 
     /**
      * Return this {@link License license}'s current {@link LicenseState state} through a {@link CompletableFuture}

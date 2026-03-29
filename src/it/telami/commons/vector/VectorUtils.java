@@ -1,5 +1,7 @@
 package it.telami.commons.vector;
 
+import it.telami.commons.unsafe.Unrestricted;
+
 /**
  * Class used for providing utilities inherent to the Vector APIs. <br>
  * Currently empty because the API is still an 'incubator' until
@@ -14,8 +16,8 @@ public final class VectorUtils {
     static {
         Class<?> c = null;
         try {
-            c = Class.forName("jdk.incubator.vector.Vector");
-        } catch (final ClassNotFoundException _) {}
+            c = Unrestricted.findClass("jdk.incubator.vector.Vector");
+        } catch (final ClassNotFoundException | IllegalAccessException _) {}
         SUPPORTED = c != null;
     }
 }

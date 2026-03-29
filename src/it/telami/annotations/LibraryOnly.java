@@ -3,7 +3,7 @@ package it.telami.annotations;
 import java.lang.annotation.*;
 
 /**
- * This class or method is strictly reserved to library's usage. <br>
+ * This class, method or field is strictly reserved to library's usage. <br>
  * Using or abusing it can cause many functionalities to collapse. <br>
  * Use at your own risk.
  * @author Telami

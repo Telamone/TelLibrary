@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public interface Color {
     String  colorPattern      = "&";
     Pattern hexPatter         = Pattern.compile("&#[a-fA-F0-9]{6}");
-    Pattern gradientPattern   = Pattern.compile("<#[a-fA-F0-9]{6}>(?!<#[a-fA-F0-9]{6}>).*<#[a-fA-F0-9]{6}>");
+    Pattern gradientPattern   = Pattern.compile("<#[a-fA-F0-9]{6}>.*?<#[a-fA-F0-9]{6}>");
     Color   commonInstance    = new ColorImpl();
 
     /**

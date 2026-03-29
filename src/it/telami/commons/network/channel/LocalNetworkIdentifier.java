@@ -3,7 +3,7 @@ package it.telami.commons.network.channel;
 import java.nio.ByteBuffer;
 
 /**
- * This {@link it.telami.commons.network.channel.ChannelNetworkIdentifier network identifier}
+ * This {@link ChannelNetworkIdentifier network identifier}
  * defines an exclusively local management of the data.
  * @author Telami
  * @since 1.0.1
