@@ -35,8 +35,8 @@ The APIs offer a high range of utilities:
 # Speed and reliability
 
 <i>Every</i> implementation is <b>rigorously tested</b> — in both in <i>normal</i> and <i>edge</i> cases —
-to ensure maximum <b>reliability</b> and <b>performances</b>. 🚀 <br>
-<b>Unstable</b> or <b>Unsupported</b> features are <i>marked</i> with dedicated <b>annotations</b>. 🖋️ <br>
+to ensure maximum <b>reliability</b> and <b>performances</b>. <br>
+<b>Unstable</b> or <b>Unsupported</b> features are <i>marked</i> with dedicated <b>annotations</b>. <br>
 
 <br>
 
