@@ -10,7 +10,7 @@ That being said, enjoy the features! <br>
 # TelLibrary: High-Performance and Thread-Safe
 
 TelLibrary is a <i>general purpose</i> <b>low-level</b> Java library built for
-<b>extreme throughput</b> and <b>thread safety</b>. <br>
+<b>extreme throughput</b>, <b>low latency</b> and <b>thread safety</b>. <br>
 
 The APIs offer a high range of utilities:
 <ul>
