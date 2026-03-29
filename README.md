@@ -16,6 +16,7 @@ The APIs offer a high range of utilities:
 <ul>
 <li>Custom Locks</li>
 <li>Efficient Thread Spinning and Parking utilities</li>
+<li>Fast Thread Pool</li>
 <li>High-Performance Cache</li>
 <li>Lock-Free Queue</li>
 <li>Zip and Jar file utilities</li>
