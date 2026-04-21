@@ -1,3 +1,10 @@
+# ❗ Disclaimer ❗
+
+I'm currently rewriting a huge part of the license system protocol and this is slowing down the product (TelLib, not these API) pubblication.
+The next release (1.0.3) will be published as soon as possible before releasing the product and will be finally usable in pair with the product.
+
+<br>
+
 # ❗ Important ❗
 
 This is the <b>public API</b>! <br>
