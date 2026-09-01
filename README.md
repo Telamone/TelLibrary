@@ -32,7 +32,7 @@ The APIs offer a high range of utilities:
 <li>Cross-JVM Communication Channels</li>
 <li>Coherent Time Formatter</li>
 <li>Advanced Logging utilities</li>
-<li>Exclusive <a href="tellib-info.telami.dpdns.org">License System</a> API</li>
+<li>Exclusive <a href="http://tellib-info.telami.dpdns.org">License System</a> API</li>
 <li>Minecraft Inventory API</li>
 <li>Minecraft Color Formatter</li>
 <li>And many more coming in the future!</li>
