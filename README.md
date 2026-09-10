@@ -1,7 +1,7 @@
 # ❗ Important ❗
 
 This is the <b>public API</b>! <br>
-The working jar may be downloaded through BuiltByBit or ModRinth. <br>
+The working jar may be downloaded through BuiltByBit. <br>
 The community may contribute and <b>bring more default implementations</b> that will be used in case no premium license is found! <br>
 The code used in the compiled jar is <i>private</i> and will be published only when the licensing server can't be maintained anymore. <br>
 That being said, enjoy the features! <br>
