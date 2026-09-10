@@ -1,13 +1,7 @@
-# ❗ Disclaimer ❗
-
-I'm currently rewriting a huge part of the license system protocol and this is slowing down the product (TelLib, not these API) pubblication.
-The next release (1.0.3) will be published as soon as possible before releasing the product and will be finally usable in pair with the product.
-
-<br>
-
 # ❗ Important ❗
 
 This is the <b>public API</b>! <br>
+The working jar may be downloaded through BuiltByBit or ModRinth. <br>
 The community may contribute and <b>bring more default implementations</b> that will be used in case no premium license is found! <br>
 The code used in the compiled jar is <i>private</i> and will be published only when the licensing server can't be maintained anymore. <br>
 That being said, enjoy the features! <br>
@@ -24,6 +18,7 @@ The APIs offer a high range of utilities:
 <li>Custom Locks</li>
 <li>Efficient Thread Spinning and Parking utilities</li>
 <li>Fast Thread Pool</li>
+<li>Network Circular Buffer</li>
 <li>High-Performance Cache</li>
 <li>Lock-Free Queue</li>
 <li>Zip and Jar file utilities</li>
@@ -45,6 +40,7 @@ The APIs offer a high range of utilities:
 <i>Every</i> implementation is <b>rigorously tested</b> — in both in <i>normal</i> and <i>edge</i> cases —
 to ensure maximum <b>reliability</b> and <b>performances</b>. <br>
 <b>Unstable</b> or <b>Unsupported</b> features are <i>marked</i> with dedicated <b>annotations</b>. <br>
+The benchmarks and tests are <b>open-source</b> and situated in the 'standalone' package. <br>
 
 <br>
 
@@ -56,4 +52,4 @@ I'm always open to ideas and contributions — feel free to engage via <a href="
 
 # Social Media
 
-<a href="https://discord.gg/ueT8bMKV2f">Discord</a> (<i>work in progress...</i>)
+<a href="http://discord.telami.dpdns.org">Discord</a>
