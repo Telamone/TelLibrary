@@ -1,6 +1,7 @@
 package it.telami.commons.network.channel;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This {@link ChannelNetworkIdentifier network identifier}
@@ -31,6 +32,12 @@ public final class LocalNetworkIdentifier extends ChannelNetworkIdentifier {
         throw new UnsupportedOperationException();
     }
     public boolean externalWrite (final ByteBuffer data) {
+        throw new UnsupportedOperationException();
+    }
+    public boolean externalWrite (final byte[] data, final long time, final TimeUnit unit) {
+        throw new UnsupportedOperationException();
+    }
+    public boolean externalWrite (final ByteBuffer data, final long time, final TimeUnit unit) {
         throw new UnsupportedOperationException();
     }
 }

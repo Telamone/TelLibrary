@@ -89,11 +89,18 @@ final class CacheBenchmark implements Benchmark {
                 state.counter.setRelease(totalCycles / 3 * 2);
             }
             bob.append('\n');
-            odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 0, TimeUnit.NANOSECONDS);
-            odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 50, TimeUnit.MILLISECONDS);
-            odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.SECONDS);
-            odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.MINUTES);
-            odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.HOURS);
+            try {
+                odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 0, TimeUnit.NANOSECONDS);
+                odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 50, TimeUnit.MILLISECONDS);
+                odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.SECONDS);
+                odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.MINUTES);
+                odp = benchmarkTelLib(warmupCycles, measurementCycles, state, bob, totalCycles, cases, odp, randomInvalidations, randoms, 1, TimeUnit.HOURS);
+            } catch (final UnsupportedOperationException | ExceptionInInitializerError | NoClassDefFoundError ex) {
+                bob.append("Cannot benchmark TelLib's Cache: ")
+                        .append(Benchmark.extractMessage(ex))
+                        .append('\n');
+                state.counter.setRelease(totalCycles);
+            }
             state.result.setOpaque(bob
                     .append("\nODP value: ")
                     .append(odp)
@@ -321,9 +328,9 @@ final class CacheBenchmark implements Benchmark {
         final AtomicInteger misses = new AtomicInteger();
         try (final Cache<String, String> cache = new Cache<>(
                 measurementCycles,
-                1f,
+                0.75f,
                 Runtime.getRuntime().availableProcessors(),
-                ContentionHandler.SMART,
+                ContentionHandler.LOW_LATENCY,
                 s -> {
                     misses.getAndIncrement();
                     return s.toUpperCase();

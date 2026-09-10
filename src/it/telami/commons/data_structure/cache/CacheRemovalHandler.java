@@ -23,6 +23,14 @@ public interface CacheRemovalHandler<K, V> {
      */
     enum Reason {
         /**
+         * {@link Cache#close() close()} has been called
+         * on the {@link Cache} storing this entry.
+         * @see Reason
+         * @author Telami
+         * @since 1.0.3
+         */
+        CLOSURE,
+        /**
          * {@link Cache#invalidate(Object) invalidate(...)} has been called
          * on this entry.
          * @see Reason

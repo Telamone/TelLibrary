@@ -2,14 +2,18 @@ package it.telami.standalone;
 
 import it.telami.commons.concurrency.thread.ContentionHandler;
 import it.telami.commons.concurrency.thread.ThreadSecondarySeedHandler;
+import it.telami.commons.open_unsafe.Unsafe;
 import it.telami.commons.util.Logging;
 import it.telami.license.License;
 import it.telami.license.LicenseState;
 import it.telami.minecraft.commons.color.Color;
 
+import java.lang.invoke.MethodType;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 final class Main {
@@ -19,7 +23,8 @@ final class Main {
             new CacheBenchmark(),
             new QueueBenchmark(),
             new ThreadPoolBenchmark(),
-            new NetworkBufferBenchmark()
+            new NetworkBufferBenchmark(),
+            new ChannelBenchmark()
     };
 
     private static final Scanner scanner = new Scanner(System.in);
@@ -59,7 +64,7 @@ final class Main {
         else logInfo("§bContinuing without ANSI...\n");
         return false;
     }
-    private static void logInfo (String message) {
+    static void logInfo (String message) {
         message = Color.commonInstance.fullTranslation(message);
         if (logger != null) {
             if (isAnsiPresent)
@@ -82,9 +87,15 @@ final class Main {
         else System.out.println(message.replaceAll("§[a-fA-F0-9klmnorx]", ""));
     }
 
+    //Avoids extreme recursion!
+    private static final AtomicBoolean called = new AtomicBoolean();
     static void main () throws InterruptedException {
+        if (!called.getAcquire()
+                && called.compareAndSet(false, true)
+                && tryHook())
+            return;
         final CountDownLatch cdl = new CountDownLatch(1);
-        License.getByName("TelLib")
+        License.getByName(License.libLicenseName)
                 .getState()
                 .thenAccept(state -> {
                     try {
@@ -155,7 +166,7 @@ final class Main {
                                     int warmupCycles = 0;
                                     do {
                                         error = false;
-                                        logInfo("\r§bPlease enter the number of warm-up cycles §3[from 0 to 100000]§b: ");
+                                        logInfo("\r§bPlease enter the number of warm-up cycles §3[from 0 to 100.000]§b: ");
                                         try {
                                             if ((warmupCycles = scanner.nextInt()) < 0 || warmupCycles > 100_000) {
                                                 logError("§cInput out of the given bound!");
@@ -175,9 +186,9 @@ final class Main {
                                     int measurementCycles = 0;
                                     do {
                                         error = false;
-                                        logInfo("\r§bPlease enter the number of measurement cycles §3[from 0 to 100000000]§b: ");
+                                        logInfo("\r§bPlease enter the number of measurement cycles §3[from 0 to 1.000.000.000]§b: ");
                                         try {
-                                            if ((measurementCycles = scanner.nextInt()) < 0 || measurementCycles > 100_000_000) {
+                                            if ((measurementCycles = scanner.nextInt()) < 0 || measurementCycles > 1_000_000_000) {
                                                 logError("§cInput out of the given bound!");
                                                 error = true;
                                             }
@@ -208,11 +219,11 @@ final class Main {
                                     }
                                     logInfo("\r[<#ff0000>||||||||||||||||||||||||||||||||||||||||||||||||||<#00ff00>§r]\n\n\r");
                                     logInfo("§bPrinting benchmark result...\n");
-                                    ThreadSecondarySeedHandler.spinUntil(
+                                    ThreadSecondarySeedHandler.spinWhile(
                                             ContentionHandler.SMART,
                                             () -> bsh.result.getAcquire() == null);
                                     //It's right to not use 'logInfo(...)'!
-                                    System.out.println(bsh.result.getOpaque());
+                                    System.out.println(bsh.result.get());
                                     logInfo("§bBenchmark terminated\n");
                                 } else {
                                     logInfo("§bThank you for choosing TelLib!");
@@ -226,5 +237,50 @@ final class Main {
                 });
         cdl.await();
         scanner.close();
+    }
+
+    private static boolean tryHook () {
+        String jarName;
+        jarName = (jarName = Main
+                .class
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath()
+                .replace("%20", " "))
+                .substring(jarName.lastIndexOf('/') + 1);
+        final String definedJar;
+        if ((definedJar = System
+                .getProperty("efineJar", jarName))
+                .substring(definedJar.lastIndexOf('/') + 1)
+                .equals(jarName))
+            return false;
+        try (final JarFile jar = new JarFile("./" + definedJar)) {
+            final String main;
+            if ((main = jar
+                    .getManifest()
+                    .getMainAttributes()
+                    .getValue("Main-Class"))
+                    != null
+                    && !main
+                    .isEmpty()) {
+                try {
+                    Unsafe.findStaticMethodHandle(
+                            Unsafe.findClass(main),
+                                    "main",
+                                    MethodType.methodType(void.class, String[].class))
+                            .invoke((Object) new String[0]);
+                } catch (final NoSuchMethodException _) {
+                    Unsafe.findStaticMethodHandle(
+                            Unsafe.findClass(main),
+                                    "main",
+                                    MethodType.methodType(void.class))
+                            .invokeExact();
+                }
+            } else return false;
+        } catch (final Throwable t) {
+            throw new RuntimeException(t);
+        }
+        return true;
     }
 }

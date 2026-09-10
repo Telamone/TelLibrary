@@ -121,7 +121,9 @@ public final class QuickTaskPool implements ExecutorService {
         this(Thread::new, Runtime.getRuntime().availableProcessors(), spinOnExecute);
     }
     /**
-     * Create a new {@link QuickTaskPool} with the given parameters.
+     * Create a new {@link QuickTaskPool} with the given parameters. <br>
+     * It's possible to specify an {@link ExceptionHandler} too using this
+     * other {@link QuickTaskPool#QuickTaskPool(ExceptionHandler, ThreadFactory, int, boolean) constructor}.
      * @param factory the given {@link ThreadFactory} that is used for
      *                creating new {@link Thread threads} <br>
      * @param parallelism the given number of {@link Thread threads} that
@@ -146,6 +148,40 @@ public final class QuickTaskPool implements ExecutorService {
      * @since 1.0.2
      */
     public QuickTaskPool (final ThreadFactory factory,
+                          int parallelism,
+                          final boolean spinOnExecute) {
+        this(Throwable::printStackTrace, factory, parallelism, spinOnExecute);
+    }
+    /**
+     * Create a new {@link QuickTaskPool} with the given parameters.
+     * @param handler the given {@link ExceptionHandler} that will handle any
+     *                exception occurring during the task execution. <br>
+     *                Any exception thrown inside this handler will be ignored! <br>
+     * @param factory the given {@link ThreadFactory} that is used for
+     *                creating new {@link Thread threads} <br>
+     * @param parallelism the given number of {@link Thread threads} that
+     *                    are used/created in this {@link QuickTaskPool pool} <br>
+     * @param spinOnExecute the given condition that is used for determining
+     *                      whether to spin or instant submit the task to
+     *                      {@link ExecutorService#execute(Runnable) execute}. <br>
+     *                      This may change how the {@link QuickTaskPool pool}
+     *                      behaves: <ul>
+     *                      <li><b>spinning</b>: permits to better balance the
+     *                      load between task submission and task retrieval
+     *                      maintaining low latency between submission and
+     *                      execution even under high-contention</li>
+     *                      <li><b>one-shot</b>: prioritize submission using
+     *                      a different approach, this help the {@link Thread
+     *                      submitter} instantly enqueuing its task and avoiding
+     *                      waste of cpu time.<br>
+     *                      This comes with a trade-off, in case of high contention
+     *                      the execution may slow down.</li>
+     *                      </ul>
+     * @author Telami
+     * @since 1.0.3
+     */
+    public QuickTaskPool (final ExceptionHandler handler,
+                          final ThreadFactory factory,
                           int parallelism,
                           final boolean spinOnExecute) {
         //Hidden implementation...

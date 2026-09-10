@@ -33,16 +33,23 @@ final class ThreadPoolBenchmark implements Benchmark {
                     state,
                     bob);
             bob.append('\n');
-            benchmarkThreadPool(
-                    "[TelLib's QuickTaskPool]",
-                    new QuickTaskPool(
-                            Thread::new,
-                            parallelism >>> 2,
-                            true),
-                    warmupCycles,
-                    measurementCycles,
-                    state,
-                    bob);
+            try {
+                benchmarkThreadPool(
+                        "[TelLib's QuickTaskPool]",
+                        new QuickTaskPool(
+                                Thread::new,
+                                parallelism >>> 2,
+                                true),
+                        warmupCycles,
+                        measurementCycles,
+                        state,
+                        bob);
+            } catch (final UnsupportedOperationException | ExceptionInInitializerError | NoClassDefFoundError ex) {
+                state.counter.setOpaque(warmupCycles + measurementCycles);
+                bob.append("[TelLib's QuickTaskPool] Cannot benchmark: '")
+                        .append(Benchmark.extractMessage(ex))
+                        .append("'\n");
+            }
             state.result.setOpaque(bob
                     .append("\n* No need of any ODP value for this benchmark *")
                     .toString());
@@ -87,7 +94,7 @@ final class ThreadPoolBenchmark implements Benchmark {
                 if ((i & 3) == 0)
                     state.counter.getAndIncrement();
             }
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) sumVar.getAcquire() != warmupCycles);
             sumVar.setOpaque(0);
@@ -99,7 +106,7 @@ final class ThreadPoolBenchmark implements Benchmark {
                     state.counter.getAndIncrement();
             }
             subTime = System.nanoTime() - subTime;
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) sumVar.getAcquire() != measurementCycles);
             time = System.nanoTime() - time;
@@ -127,11 +134,11 @@ final class ThreadPoolBenchmark implements Benchmark {
                     }
                     subVar.getAndAddRelease(warmupSubTasks);
                 });
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) subVar.getAcquire() != warmupCycles);
             subVar.setOpaque(0);
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) sumVar.getAcquire() != warmupCycles);
             sumVar.setOpaque(0);
@@ -147,11 +154,11 @@ final class ThreadPoolBenchmark implements Benchmark {
                     }
                     subVar.getAndAddRelease(measurementSubTasks);
                 });
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) subVar.getAcquire() != measurementCycles);
             subTime = System.nanoTime() - subTime;
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) sumVar.getAcquire() != measurementCycles);
             time = System.nanoTime() - time;

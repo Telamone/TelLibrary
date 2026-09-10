@@ -1,5 +1,6 @@
 package it.telami.commons.data_structure.buffer;
 
+import it.telami.commons.concurrency.thread.ContentionHandler;
 import it.telami.commons.data_structure.DataStructure;
 
 import java.net.InetSocketAddress;
@@ -34,6 +35,21 @@ public final class NetworkBuffer implements DataStructure {
     public NetworkBuffer (final int fixedReadWriteBytes,
                           final int bufferSize,
                           final int buffersAmount) {
+        this(fixedReadWriteBytes, bufferSize, buffersAmount, ContentionHandler.SMART);
+    }
+    /**
+     * Create a new {@link NetworkBuffer} using the given parameters.
+     * @param fixedReadWriteBytes the number of bytes read or written
+     * @param bufferSize the number of bytes per-buffer <b>(usually:</b> <i>fixedReadWriteBytes</i> <b>*</b> <i>slots-per-buffer</i><b>)</b>
+     * @param buffersAmount the number of buffers
+     * @param handler the given {@link ContentionHandler}
+     * @author Telami
+     * @since 1.0.3
+     */
+    public NetworkBuffer (int fixedReadWriteBytes,
+                          int bufferSize,
+                          final int buffersAmount,
+                          final ContentionHandler handler) {
         //Hidden implementation...
     }
 

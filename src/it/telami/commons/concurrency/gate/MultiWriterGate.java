@@ -11,7 +11,15 @@ import java.lang.invoke.VarHandle;
  * (or many) request the {@link MultiWriterGate#waitUntilClose(ContentionHandler)
  * closure}, so it will wait until all the other threads
  * {@link MultiWriterGate#getAndDecrease() decrease} the counter of the
- * threads {@link MultiWriterGate#tryIncrease() inside} the Gate.
+ * threads {@link MultiWriterGate#tryIncrease() inside} the Gate. <br>
+ * Respectively to {@link UnsafeMultiWriterGate} and {@link FairMultiWriterGate},
+ * this class is preferred where a more accurate control of the working threads
+ * is desired. <br>
+ * @apiNote The {@link MultiWriterGate#waitUntilClose(ContentionHandler) waitUntilClose(...)}
+ *          doesn't automatically prevent any further access to the Gate. <br>
+ *          See {@link MultiWriterGate#tryIncrease() tryIncrease()} for details. <br>
+ *          This type of behaviour is called <b>unfairness</b> and is not present in the
+ *          {@link FairMultiWriterGate} implementation.
  * @author Telami
  * @since 1.0.0
  */
@@ -76,9 +84,6 @@ public final class MultiWriterGate {
     /**
      * Decrease the amount of working threads and return the
      * previous number of working threads. <br>
-     * Calling this method twice or more times may lead to
-     * corruption if it is not known what this method exactly
-     * does! <br>
      * If the closure has been requested, this method returns
      * the current count of working threads. <br> <br>
      * Example of how to use this method correctly:
@@ -119,7 +124,7 @@ public final class MultiWriterGate {
 
     /**
      * Re-open the gate if it was closed. <br>
-     * This is particularly heavy respect to the other
+     * This is particularly strict respect to the other
      * operations since it's not allowed to fail under
      * a correct code flow like this:
      * <pre> {@code

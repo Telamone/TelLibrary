@@ -62,17 +62,24 @@ final class QueueBenchmark implements Benchmark {
                     odp,
                     randoms);
             bob.append('\n');
-            odp = benchmarkQueue(
-                    "[TelLib's ConcurrentQueue]",
-                    new ConcurrentQueue<>(),
-                    warmupCycles,
-                    measurementCycles,
-                    state,
-                    bob,
-                    totalCycles,
-                    cases,
-                    odp,
-                    randoms);
+            try {
+                odp = benchmarkQueue(
+                        "[TelLib's ConcurrentQueue]",
+                        new ConcurrentQueue<>(),
+                        warmupCycles,
+                        measurementCycles,
+                        state,
+                        bob,
+                        totalCycles,
+                        cases,
+                        odp,
+                        randoms);
+            } catch (final UnsupportedOperationException | ExceptionInInitializerError | NoClassDefFoundError ex) {
+                state.counter.setOpaque(totalCycles);
+                bob.append("[TelLib's ConcurrentQueue] Cannot benchmark: '")
+                        .append(Benchmark.extractMessage(ex))
+                        .append("'\n");
+            }
             state.result.setOpaque(bob
                     .append("\nODP value: ")
                     .append(odp)

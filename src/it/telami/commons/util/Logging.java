@@ -13,11 +13,9 @@ import java.util.logging.Logger;
  * @since 1.0.0
  */
 public final class Logging {
-    private Logging () {}
+    public static final Logger minecraftLogger = null;
 
-    private static final boolean defaultClock = Boolean.getBoolean("efine_IsLoggingClockActiveByDefault");
-    public static final Logger commonLogger = newAlignedLogger("TelLib", defaultClock, false, _ -> {});
-    public static final Logger minecraftLogger = newAlignedLogger("TelLib", defaultClock, true, _ -> {});
+    private Logging () {}
 
     /**
      * Try enabling the ANSI support if the current {@link OperatingSystem}

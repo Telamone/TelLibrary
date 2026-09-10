@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
  * and GC friendly cache.
  * <p>
  * Pros: <ul>
- * <li>support null values;</li>
  * <li><b>try</b> to ensure a value from being collected by the
  * GC for a specified amount of time or permanently;</li>
  * <li>if the GC decides that the memory MUST be freed, then it's free
@@ -48,7 +47,9 @@ public final class Cache<K, V> implements DataStructure, AutoCloseable {
      * @param loader see {@link CacheLoader}
      * @param removalHandler see {@link CacheRemovalHandler}
      * @throws IllegalArgumentException if one of the first 3 arguments is 0 (except
-     *                                  for 'initialCapacity') or negative
+     *                                  for 'initialCapacity') or negative, or if the
+     *                                  given 'loader' is null
+     * @apiNote The 'loader' MUST return a NON-NULL value!
      * @author Telami
      * @since 1.0.0
      */
@@ -109,6 +110,143 @@ public final class Cache<K, V> implements DataStructure, AutoCloseable {
     }
 
     /**
+     * Load <b>pseudo-permanently</b> into the cache the given value
+     * if there isn't any yet. <br>
+     * The 'pseudo' (that means 'not totally') is specified because,
+     * as the {@link Cache} states, the GC is free to manage this
+     * cache in case of necessity, so it can decide to free a value
+     * that was marked in precedence as permanent.
+     * @param key the given key
+     * @param preComputed the given value
+     * @return the given value, or the
+     *         already existing value, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
+     * @apiNote The given value MUST be NON-NULL!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V load (final K key, final V preComputed) {
+        //Hidden implementation...
+        return null;
+    }
+    /**
+     * Load into the cache the given value if there isn't any yet, <b>trying</b> to
+     * ensure that it remains loaded for the given time per unit. <br>
+     * It will only 'try' to ensure because, as the {@link Cache} states, the GC is
+     * free to manage this cache in case of necessity, so it can decide to free a
+     * value that has not already reached its defined time-to-live or maintain it
+     * if there is no clue in removing it.
+     * @param key the given key
+     * @param preComputed the given value
+     * @param time the given time
+     * @param unit the given unit
+     * @return the given value, or
+     *         the already existing value, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
+     * @apiNote The given value MUST be NON-NULL!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V load (final K key,
+                   final V preComputed,
+                   final long time,
+                   final TimeUnit unit) {
+        //Hidden implementation...
+        return null;
+    }
+
+    /**
+     * Load <b>pseudo-permanently</b> into the cache the given value. <br>
+     * The 'pseudo' (that means 'not totally') is specified because,
+     * as the {@link Cache} states, the GC is free to manage this
+     * cache in case of necessity, so it can decide to free a value
+     * that was marked in precedence as permanent.
+     * @param key the given key
+     * @param preComputed the given value
+     * @return the precedent value, or the given value if no already
+     *         existing value is found, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
+     * @apiNote The given value MUST be NON-NULL!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V forceLoad (final K key, final V preComputed) {
+        //Hidden implementation...
+        return null;
+    }
+    /**
+     * Load into the cache the given value, <b>trying</b> to ensure that it
+     * remains loaded for the given time per unit. <br>
+     * It will only 'try' to ensure because, as the {@link Cache} states, the GC is
+     * free to manage this cache in case of necessity, so it can decide to free a
+     * value that has not already reached its defined time-to-live or maintain it
+     * if there is no clue in removing it.
+     * @param key the given key
+     * @param preComputed the given value
+     * @param time the given time
+     * @param unit the given unit
+     * @return the precedent value, or the given value if no already
+     *         existing value is found, or {@code null} if
+     *         {@link AutoCloseable#close() closed}
+     * @apiNote The given value MUST be NON-NULL!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V forceLoad (final K key,
+                        final V preComputed,
+                        final long time,
+                        final TimeUnit unit) {
+        //Hidden implementation...
+        return null;
+    }
+
+    /**
+     * Check if the given key is present in the {@link  Cache}. <br>
+     * If so, return its corresponding value without trying to {@link Cache#load(Object) load} it. <br>
+     * This doesn't affect the removal timer, if present.
+     * @param key the given key
+     * @return the given key's corresponding value if present, {@code null} otherwise
+     * @apiNote The value loading may effectively be executed by this method in a highly concurrent environment!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V check (final K key) {
+        //Hidden implementation...
+        return null;
+    }
+    /**
+     * Check if the given key is present in the {@link  Cache}. <br>
+     * If so, return its corresponding value without trying to {@link Cache#load(Object) load} it. <br>
+     * This will affect the removal timer by marking the value as <b>pseudo-permanent</b>.
+     * @param key the given key
+     * @return the given key's corresponding value if present, {@code null} otherwise
+     * @apiNote The value loading may effectively be executed by this method in a highly concurrent environment!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V checkAndUpdate (final K key) {
+        //Hidden implementation...
+        return null;
+    }
+    /**
+     * Check if the given key is present in the {@link  Cache}. <br>
+     * If so, return its corresponding value without trying to {@link Cache#load(Object) load} it. <br>
+     * This will affect the removal timer using the given time and the given unit, but will not
+     * have the same effects as {@link Cache#forceTime(Object, long, TimeUnit) forceTime(...)}.
+     * @param key the given key
+     * @param time the given time
+     * @param unit the given unit
+     * @return the given key's corresponding value if present, {@code null} otherwise
+     * @apiNote The value loading may effectively be executed by this method in a highly concurrent environment!
+     * @author Telami
+     * @since 1.0.3
+     */
+    public V checkAndUpdate (final K key, final long time, final TimeUnit unit) {
+        //Hidden implementation...
+        return null;
+    }
+
+    /**
      * Check if the given key is present in the {@link Cache cache}. <br>
      * This doesn't affect the removal timer, if present.
      * @param key the given key
@@ -141,22 +279,30 @@ public final class Cache<K, V> implements DataStructure, AutoCloseable {
     }
 
     /**
-     * Invalidate the given key's corresponding value.
+     * Invalidate the given key's corresponding value and return it.
      * @param key the given key
+     * @return the corresponding value if it has been invalidated
+     *         by this method's call, {@code null} otherwise
      * @author Telami
      * @since 1.0.0
      */
-    public void invalidate (final K key) {
+    public V invalidate (final K key) {
         //Hidden implementation...
+        return null;
     }
-
     /**
-     * Clears this {@link Cache cache}.
+     * Invalidate the given key's corresponding value if it
+     * is equal to the given value.
+     * @param key the given key
+     * @param value the given value
+     * @return {@code true} if the value has been invalidated
+     *         by this method's call, {@code false} otherwise
      * @author Telami
-     * @since 1.0.0
+     * @since 1.0.3
      */
-    public void clear () {
+    public boolean invalidate (final K key, final V value) {
         //Hidden implementation...
+        return false;
     }
 
     /**

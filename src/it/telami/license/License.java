@@ -25,7 +25,7 @@ public abstract class License {
     @LibraryOnly
     public static final String libLicenseName = "TelLib";
     @LibraryOnly
-    public static final String version = "1.0.2";
+    public static final String version = "1.0.3";
 
     protected static final Map<String, License> licenses = new ConcurrentHashMap<>();
 

@@ -13,7 +13,7 @@ public final class ZipUtils {
     private ZipUtils () {}
 
     /**
-     * Completely erase the content of the jar, the already loaded classes
+     * Completely erase the content of the calling jar, the already loaded classes
      * will still function.
      * @return {@code true} if the operation succeed, {@code false} otherwise
      * @author Telami

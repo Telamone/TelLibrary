@@ -3,6 +3,7 @@ package it.telami.commons.network.channel;
 import it.telami.commons.concurrency.thread.ContentionHandler;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represent the data handler. <br>
@@ -52,7 +53,8 @@ public abstract class ChannelNetworkIdentifier {
      * @param container the given container
      * @return the given container, a new container or {@code null}
      *         if there aren't data immediately available
-     * @apiNote The implementation MUST be non-blocking.
+     * @apiNote The implementation MUST be non-blocking, the
+     *          {@link CrossJVMChannel} will handle the synchronization.
      * @author Telami
      * @since 1.0.1
      */
@@ -62,7 +64,8 @@ public abstract class ChannelNetworkIdentifier {
      * @param container the given container
      * @return the given container, a new container or {@code null}
      *         if there aren't data immediately available
-     * @apiNote The implementation MUST be non-blocking.
+     * @apiNote The implementation MUST be non-blocking, the
+     *          {@link CrossJVMChannel} will handle the synchronization.
      * @author Telami
      * @since 1.0.1
      */
@@ -86,4 +89,28 @@ public abstract class ChannelNetworkIdentifier {
      * @since 1.0.1
      */
     protected abstract boolean externalWrite (final ByteBuffer data);
+    /**
+     * Return if the given data are successfully sent within the given
+     * time limit and the current {@link Thread} has not been {@link Thread#interrupted() interrupted}. <br>
+     * @param data the given data
+     * @param time the given time
+     * @param unit the given time's unit
+     * @return {@code true} if the given data have been sent successfully within the given
+     *         time limit and the current {@link Thread} has not been {@link Thread#interrupted()},
+     *         {@code false} otherwise
+     * @author Telami
+     * @since 1.0.3
+     */
+    protected abstract boolean externalWrite (final byte[] data, final long time, final TimeUnit unit);
+    /**
+     * See {@link ChannelNetworkIdentifier#externalWrite(byte[], long, TimeUnit)}.
+     * @param data the given data
+     * @param time the given time
+     * @param unit the given time's unit
+     * @return {@code true} if the given data have been sent successfully,
+     *         {@code false} otherwise
+     * @author Telami
+     * @since 1.0.3
+     */
+    protected abstract boolean externalWrite (final ByteBuffer data, final long time, final TimeUnit unit);
 }

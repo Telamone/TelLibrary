@@ -7,9 +7,9 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import it.telami.commons.concurrency.thread.ContentionHandler;
 import it.telami.commons.concurrency.thread.ThreadSecondarySeedHandler;
+import it.telami.commons.data_structure.buffer.ContinuousNetworkBuffer;
 import it.telami.commons.data_structure.buffer.NetworkBuffer;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.net.InetSocketAddress;
@@ -18,6 +18,7 @@ import java.nio.channels.spi.AbstractInterruptibleChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -123,17 +124,15 @@ final class NetworkBufferBenchmark implements Benchmark {
                     buf.put(0, (byte) 0);
                 })
                 .toArray(ByteBuffer[]::new);
-        parallelism *= 4;
-        //Divisible both for 'parallelism' and for '4'!
+        parallelism *= 6;
+        //Divisible both for 'parallelism' and for '6'!
         final int warmupCycles = (wc - (wc % parallelism)) + parallelism;
         final int measurementCycles = (mc - (mc % parallelism)) + parallelism;
         final StateHolder state = new StateHolder();
         new Thread(() -> {
             final StringBuilder bob = new StringBuilder();
             final int realParallelism = Runtime.getRuntime().availableProcessors();
-            try (final ExecutorService writersPool = Executors.newWorkStealingPool(realParallelism);
-                 final ExecutorService readersPool = Executors.newWorkStealingPool(realParallelism);
-                 final AbstractInterruptibleChannel c = new AbstractInterruptibleChannel() {protected void implCloseChannel(){}}) {
+            try (final ExecutorService writersPool = Executors.newWorkStealingPool(realParallelism)) {
                 try {
                     benchmarkLMAX(
                             warmupCycles,
@@ -144,26 +143,54 @@ final class NetworkBufferBenchmark implements Benchmark {
                             bob);
                 } catch (final Throwable t) {
                     if (t.getCause() instanceof UnsupportedOperationException)
-                        bob.append("[LMAX Disruptor]         Cannot benchmark: 'Use of unsupported operations'");
-                    else bob.append("[LMAX Disruptor]         Cannot benchmark: '")
+                        bob.append("[LMAX Disruptor]                   Cannot benchmark: 'Use of unsupported operations'\n");
+                    else bob.append("[LMAX Disruptor]                   Cannot benchmark: '")
                             .append(t.getMessage())
-                            .append("'");
-                    state.counter.getAndAdd((warmupCycles >>> 1) + (measurementCycles >>> 1));
+                            .append("'\n");
+                    state.counter.getAndAdd((warmupCycles / 3) + (measurementCycles / 3));
                 }
-                bob.append('\n');
-                benchmarkTelLib(
-                        warmupCycles,
-                        measurementCycles,
-                        preComputedData,
-                        writersPool,
-                        c,
-                        readersPool,
-                        realParallelism,
-                        state,
-                        bob);
+                final AtomicReference<ContinuousNetworkBuffer> buffer = new AtomicReference<>();
+                try (final AutoCloseable _ = () -> buffer.getPlain().close();
+                     final ExecutorService readersPool = Executors.newWorkStealingPool(realParallelism);
+                     final AbstractInterruptibleChannel c = new AbstractInterruptibleChannel() {protected void implCloseChannel(){}}) {
+                    buffer.setPlain(benchmarkTelLibContinuous(
+                            warmupCycles,
+                            measurementCycles,
+                            preComputedData,
+                            writersPool,
+                            c,
+                            readersPool,
+                            realParallelism,
+                            state,
+                            bob));
+                } catch (final UnsupportedOperationException | ExceptionInInitializerError | NoClassDefFoundError ex) {
+                    bob.append("[TelLib's ContinuousNetworkBuffer] Cannot benchmark: '")
+                            .append(Benchmark.extractMessage(ex))
+                            .append("'\n");
+                    state.counter.getAndAdd((warmupCycles / 3) + (measurementCycles / 3));
+                }
+                try (final ExecutorService readersPool = Executors.newWorkStealingPool(realParallelism);
+                     final AbstractInterruptibleChannel c = new AbstractInterruptibleChannel() {protected void implCloseChannel(){}}) {
+                    benchmarkTelLibStandard(
+                            warmupCycles,
+                            measurementCycles,
+                            preComputedData,
+                            writersPool,
+                            c,
+                            readersPool,
+                            realParallelism,
+                            state,
+                            bob);
+                } catch (final UnsupportedOperationException | ExceptionInInitializerError | NoClassDefFoundError ex) {
+                    bob.append("[TelLib's NetworkBuffer]           Cannot benchmark: '")
+                            .append(Benchmark.extractMessage(ex))
+                            .append("'\n");
+                    state.counter.getAndAdd((warmupCycles / 3) + (measurementCycles / 3));
+                }
                 Runtime.getRuntime().gc();
-            } catch (final IOException e) {
+            } catch (final Exception e) {
                 bob.append("\nUnexpected error: ").append(e.getMessage());
+                state.counter.setRelease(warmupCycles + measurementCycles);
             }
             state.result.setOpaque(bob
                     .append("\n* No need of any ODP value for this benchmark *")
@@ -186,32 +213,32 @@ final class NetworkBufferBenchmark implements Benchmark {
             long writeTime, readTime;
             for (int i = 0; i < warmupCycles; ++i) {
                 buffer.write(preComputedData[i % preComputedData.length].rewind());
-                if ((i & 3) == 0)
+                if ((i % 6) == 0)
                     state.counter.getAndIncrement();
             }
             buffer.write(endBuffer.rewind());
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) readVar.getAcquire() != 1);
             writeTime = readTime = System.nanoTime();
             for (int i = 0; i < measurementCycles; ++i) {
                 buffer.write(preComputedData[i % preComputedData.length].rewind());
-                if ((i & 3) == 0)
+                if ((i % 6) == 0)
                     state.counter.getAndIncrement();
             }
             writeTime = System.nanoTime() - writeTime;
             buffer.write(endBuffer.rewind());
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) readVar.getAcquire() != 2);
             readTime = System.nanoTime() - readTime;
             final String threads = String.valueOf(Runtime.getRuntime().availableProcessors());
-            bob.append("[LMAX Disruptor]        ")
+            bob.append("[LMAX Disruptor]                  ")
                     .append(" Time per write (1-thread):   ")
                     .repeat(' ', threads.length())
                     .append(writeTime / (float) measurementCycles)
                     .append(" ns\n")
-                    .append("[LMAX Disruptor]        ")
+                    .append("[LMAX Disruptor]                  ")
                     .append(" Time per read:               ")
                     .repeat(' ', threads.length())
                     .append(readTime / (float) measurementCycles)
@@ -226,15 +253,15 @@ final class NetworkBufferBenchmark implements Benchmark {
                     }
                     writeVar.getAndAddRelease(1);
                 });
-                if ((i & 3) == 0)
+                if ((i % 6) == 0)
                     state.counter.getAndIncrement();
             }
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.LOW_LATENCY,
                     () -> (int) writeVar.getAcquire() != warmupCycles);
             buffer.write(endBuffer.rewind());
             writeVar.setOpaque(0);
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) readVar.getAcquire() != 3);
             writeTime = readTime = System.nanoTime();
@@ -248,28 +275,28 @@ final class NetworkBufferBenchmark implements Benchmark {
                     }
                     writeVar.getAndAddRelease(1);
                 });
-                if ((i & 3) == 0)
+                if ((i % 6) == 0)
                     state.counter.getAndIncrement();
             }
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.LOW_LATENCY,
                     () -> (int) writeVar.getAcquire() != measurementCycles);
             writeTime = System.nanoTime() - writeTime;
             buffer.write(endBuffer.rewind());
             writeVar.setOpaque(0);
-            ThreadSecondarySeedHandler.spinUntil(
+            ThreadSecondarySeedHandler.spinWhile(
                     ContentionHandler.SMART,
                     () -> (int) readVar.getAcquire() != 4);
             readTime = System.nanoTime() - readTime;
             readVar.setOpaque(0);
             VarHandle.fullFence();
-            bob.append("[LMAX Disruptor]        ")
+            bob.append("[LMAX Disruptor]                  ")
                     .append(" Time per write (")
                     .append(threads)
                     .append("-threads):   ")
                     .append(writeTime / (float) measurementCycles)
                     .append(" ns\n")
-                    .append("[LMAX Disruptor]        ")
+                    .append("[LMAX Disruptor]                  ")
                     .append(" Time per read:               ")
                     .repeat(' ', threads.length())
                     .append(readTime / (float) measurementCycles)
@@ -277,15 +304,126 @@ final class NetworkBufferBenchmark implements Benchmark {
         }
     }
 
-    private static void benchmarkTelLib (final int warmupCycles,
-                                         final int measurementCycles,
-                                         final ByteBuffer[] preComputedData,
-                                         final ExecutorService writersPool,
-                                         final AbstractInterruptibleChannel c,
-                                         final ExecutorService readersPool,
-                                         final int readersSize,
-                                         final StateHolder state,
-                                         final StringBuilder bob) {
+    private static ContinuousNetworkBuffer benchmarkTelLibContinuous (final int warmupCycles,
+                                                                      final int measurementCycles,
+                                                                      final ByteBuffer[] preComputedData,
+                                                                      final ExecutorService writersPool,
+                                                                      final AbstractInterruptibleChannel c,
+                                                                      final ExecutorService readersPool,
+                                                                      final int readersSize,
+                                                                      final StateHolder state,
+                                                                      final StringBuilder bob) {
+        final ContinuousNetworkBuffer buffer = new ContinuousNetworkBuffer(DATA_SIZE, DATA_SIZE * MAX_DATA_AMOUNT);
+        {
+            for (int i = 0; i < readersSize; ++i)
+                readersPool.execute(() -> {
+                    final ByteBuffer buf = localBuffer.get();
+                    while (buffer.read(c, buf.clear()) != null)
+                        process(buf);
+                });
+        }
+        long writeTime, readTime;
+        for (int i = 0; i < warmupCycles; ++i) {
+            buffer.write(preComputedData[i % preComputedData.length].rewind(), commonAddress);
+            if ((i % 6) == 0)
+                state.counter.getAndIncrement();
+        }
+        buffer.write(endBuffer.rewind(), commonAddress);
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.SMART,
+                () -> (int) readVar.getAcquire() != 1);
+        writeTime = readTime = System.nanoTime();
+        for (int i = 0; i < measurementCycles; ++i) {
+            buffer.write(preComputedData[i % preComputedData.length].rewind(), commonAddress);
+            if ((i % 6) == 0)
+                state.counter.getAndIncrement();
+        }
+        writeTime = System.nanoTime() - writeTime;
+        buffer.write(endBuffer.rewind(), commonAddress);
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.SMART,
+                () -> (int) readVar.getAcquire() != 2);
+        readTime = System.nanoTime() - readTime;
+        final String threads = String.valueOf(Runtime.getRuntime().availableProcessors());
+        bob.append("[TelLib's ContinuousNetworkBuffer]")
+                .append(" Time per write (1-thread):   ")
+                .repeat(' ', threads.length())
+                .append(writeTime / (float) measurementCycles)
+                .append(" ns\n")
+                .append("[TelLib's ContinuousNetworkBuffer]")
+                .append(" Time per read:               ")
+                .repeat(' ', threads.length())
+                .append(readTime / (float) measurementCycles)
+                .append(" ns\n");
+        for (int i = 0; i < warmupCycles; ++i) {
+            final int j = i;
+            writersPool.execute(() -> {
+                final ByteBuffer buf = preComputedData[j % preComputedData.length];
+                //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                synchronized (buf) {
+                    buffer.write(buf.rewind(), commonAddress);
+                }
+                writeVar.getAndAddRelease(1);
+            });
+            if ((i % 6) == 0)
+                state.counter.getAndIncrement();
+        }
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.LOW_LATENCY,
+                () -> (int) writeVar.getAcquire() != warmupCycles);
+        buffer.write(endBuffer.rewind(), commonAddress);
+        writeVar.setOpaque(0);
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.SMART,
+                () -> (int) readVar.getAcquire() != 3);
+        writeTime = readTime = System.nanoTime();
+        for (int i = 0; i < measurementCycles; ++i) {
+            final int j = i;
+            writersPool.execute(() -> {
+                final ByteBuffer buf = preComputedData[j % preComputedData.length];
+                //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                synchronized (buf) {
+                    buffer.write(buf.rewind(), commonAddress);
+                }
+                writeVar.getAndAddRelease(1);
+            });
+            if ((i % 6) == 0)
+                state.counter.getAndIncrement();
+        }
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.LOW_LATENCY,
+                () -> (int) writeVar.getAcquire() != measurementCycles);
+        writeTime = System.nanoTime() - writeTime;
+        buffer.write(endBuffer.rewind(), commonAddress);
+        writeVar.setOpaque(0);
+        ThreadSecondarySeedHandler.spinWhile(
+                ContentionHandler.SMART,
+                () -> (int) readVar.getAcquire() != 4);
+        readTime = System.nanoTime() - readTime;
+        readVar.setOpaque(0);
+        bob.append("[TelLib's ContinuousNetworkBuffer]")
+                .append(" Time per write (")
+                .append(threads)
+                .append("-threads):   ")
+                .append(writeTime / (float) measurementCycles)
+                .append(" ns\n")
+                .append("[TelLib's ContinuousNetworkBuffer]")
+                .append(" Time per read:               ")
+                .repeat(' ', threads.length())
+                .append(readTime / (float) measurementCycles)
+                .append(" ns\n");
+        return buffer;
+    }
+
+    private static void benchmarkTelLibStandard (final int warmupCycles,
+                                                 final int measurementCycles,
+                                                 final ByteBuffer[] preComputedData,
+                                                 final ExecutorService writersPool,
+                                                 final AbstractInterruptibleChannel c,
+                                                 final ExecutorService readersPool,
+                                                 final int readersSize,
+                                                 final StateHolder state,
+                                                 final StringBuilder bob) {
         final NetworkBuffer buffer = new NetworkBuffer(DATA_SIZE, DATA_SIZE * MAX_DATA_AMOUNT, 1);
         {
             for (int i = 0; i < readersSize; ++i)
@@ -297,33 +435,33 @@ final class NetworkBufferBenchmark implements Benchmark {
         }
         long writeTime, readTime;
         for (int i = 0; i < warmupCycles; ++i) {
-            buffer.write(preComputedData[i % preComputedData.length], commonAddress);
-            if ((i & 3) == 0)
+            buffer.write(preComputedData[i % preComputedData.length].rewind(), commonAddress);
+            if ((i % 6) == 0)
                 state.counter.getAndIncrement();
         }
-        buffer.write(endBuffer, commonAddress);
-        ThreadSecondarySeedHandler.spinUntil(
+        buffer.write(endBuffer.rewind(), commonAddress);
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.SMART,
                 () -> (int) readVar.getAcquire() != 1);
         writeTime = readTime = System.nanoTime();
         for (int i = 0; i < measurementCycles; ++i) {
-            buffer.write(preComputedData[i % preComputedData.length], commonAddress);
-            if ((i & 3) == 0)
+            buffer.write(preComputedData[i % preComputedData.length].rewind(), commonAddress);
+            if ((i % 6) == 0)
                 state.counter.getAndIncrement();
         }
         writeTime = System.nanoTime() - writeTime;
-        buffer.write(endBuffer, commonAddress);
-        ThreadSecondarySeedHandler.spinUntil(
+        buffer.write(endBuffer.rewind(), commonAddress);
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.SMART,
                 () -> (int) readVar.getAcquire() != 2);
         readTime = System.nanoTime() - readTime;
         final String threads = String.valueOf(Runtime.getRuntime().availableProcessors());
-        bob.append("[TelLib's NetworkBuffer]")
+        bob.append("[TelLib's NetworkBuffer]          ")
                 .append(" Time per write (1-thread):   ")
                 .repeat(' ', threads.length())
                 .append(writeTime / (float) measurementCycles)
                 .append(" ns\n")
-                .append("[TelLib's NetworkBuffer]")
+                .append("[TelLib's NetworkBuffer]          ")
                 .append(" Time per read:               ")
                 .repeat(' ', threads.length())
                 .append(readTime / (float) measurementCycles)
@@ -334,19 +472,19 @@ final class NetworkBufferBenchmark implements Benchmark {
                 final ByteBuffer buf = preComputedData[j % preComputedData.length];
                 //noinspection SynchronizationOnLocalVariableOrMethodParameter
                 synchronized (buf) {
-                    buffer.write(buf, commonAddress);
+                    buffer.write(buf.rewind(), commonAddress);
                 }
                 writeVar.getAndAddRelease(1);
             });
-            if ((i & 3) == 0)
+            if ((i % 6) == 0)
                 state.counter.getAndIncrement();
         }
-        ThreadSecondarySeedHandler.spinUntil(
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.LOW_LATENCY,
                 () -> (int) writeVar.getAcquire() != warmupCycles);
-        buffer.write(endBuffer, commonAddress);
+        buffer.write(endBuffer.rewind(), commonAddress);
         writeVar.setOpaque(0);
-        ThreadSecondarySeedHandler.spinUntil(
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.SMART,
                 () -> (int) readVar.getAcquire() != 3);
         writeTime = readTime = System.nanoTime();
@@ -356,31 +494,31 @@ final class NetworkBufferBenchmark implements Benchmark {
                 final ByteBuffer buf = preComputedData[j % preComputedData.length];
                 //noinspection SynchronizationOnLocalVariableOrMethodParameter
                 synchronized (buf) {
-                    buffer.write(buf, commonAddress);
+                    buffer.write(buf.rewind(), commonAddress);
                 }
                 writeVar.getAndAddRelease(1);
             });
-            if ((i & 3) == 0)
+            if ((i % 6) == 0)
                 state.counter.getAndIncrement();
         }
-        ThreadSecondarySeedHandler.spinUntil(
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.LOW_LATENCY,
                 () -> (int) writeVar.getAcquire() != measurementCycles);
         writeTime = System.nanoTime() - writeTime;
-        buffer.write(endBuffer, commonAddress);
+        buffer.write(endBuffer.rewind(), commonAddress);
         writeVar.setOpaque(0);
-        ThreadSecondarySeedHandler.spinUntil(
+        ThreadSecondarySeedHandler.spinWhile(
                 ContentionHandler.SMART,
                 () -> (int) readVar.getAcquire() != 4);
         readTime = System.nanoTime() - readTime;
         readVar.setOpaque(0);
-        bob.append("[TelLib's NetworkBuffer]")
+        bob.append("[TelLib's NetworkBuffer]          ")
                 .append(" Time per write (")
                 .append(threads)
                 .append("-threads):   ")
                 .append(writeTime / (float) measurementCycles)
                 .append(" ns\n")
-                .append("[TelLib's NetworkBuffer]")
+                .append("[TelLib's NetworkBuffer]          ")
                 .append(" Time per read:               ")
                 .repeat(' ', threads.length())
                 .append(readTime / (float) measurementCycles)

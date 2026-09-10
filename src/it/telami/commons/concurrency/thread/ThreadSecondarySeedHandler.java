@@ -55,6 +55,8 @@ public final class ThreadSecondarySeedHandler {
     /**
      * Parks trying to achieve the best wait-time, basing on the max
      * threshold and the last total wait-time from the first call. <br>
+     * If the calculated time is not higher or equal than the given
+     * minimum time for parking, then {@link Thread#yield()} is invoked. <br>
      * Example:
      * <pre> {@code
      * for (final long start = System.nanoTime(); condition;)
@@ -68,21 +70,23 @@ public final class ThreadSecondarySeedHandler {
      *          alternated way, it's recommended to set the return value of this
      *          method as the current seed through
      *          {@link ThreadSecondarySeedHandler#setSecondarySeed(int)}.
+     * @param minTimeForParking the min wait-time in nanoseconds
      * @param maxTimeThreshold the max wait-time in nanoseconds
-     * @param lastElapsedTime the last total wait-time in nanoseconds
-     * @return the time spent parking
+     * @param lastElapsedTime the last total wait-time
+     * @return the time spent parking (so the total wait-time)
      * @author Telami
-     * @since 1.0.0
+     * @since 1.0.3
      */
-    public static int parkSpeculatively (final int maxTimeThreshold,
+    public static int parkSpeculatively (final int minTimeForParking,
+                                         final int maxTimeThreshold,
                                          int lastElapsedTime) {
         //Hidden implementation...
         return 0;
     }
 
     /**
-     * Spin, basing on the given {@link ContentionHandler handler}, until
-     * the given {@link BooleanSupplier condition} return {@code false}. <br>
+     * Spin basing on the given {@link ContentionHandler handler} while
+     * the given {@link BooleanSupplier condition} return {@code true}. <br>
      * If side effects are required, it's recommended to use
      * {@link java.util.concurrent.atomic atomics} and their respective
      * {@link AtomicReference#getPlain() getPlain()} and
@@ -90,12 +94,35 @@ public final class ThreadSecondarySeedHandler {
      * methods inside and outside the given condition.
      * @param handler the given {@link ContentionHandler handler}
      * @param condition the given {@link BooleanSupplier condition}
-     * @apiNote This method rely on {@link ThreadSecondarySeedHandler#spinOrYieldHeuristically()}.
+     * @apiNote This method relies on {@link ThreadSecondarySeedHandler#spinOrYieldHeuristically()}.
      * @author Telami
-     * @since 1.0.1
+     * @since 1.0.3
      */
-    public static void spinUntil (final ContentionHandler handler,
+    public static void spinWhile (final ContentionHandler handler,
                                   final BooleanSupplier condition) {
         //Hidden implementation...
+    }
+
+    /**
+     * Park basing on the given 'maxTimeThreshold' and 'minTimeForParking'
+     * while the given {@link BooleanSupplier condition} return {@code true}. <br>
+     * If side effects are required, it's recommended to use
+     * {@link java.util.concurrent.atomic atomics} and their respective
+     * {@link AtomicReference#getPlain() getPlain()} and
+     * {@link AtomicReference#setPlain(Object) setPlain(...)}
+     * methods inside and outside the given condition.
+     * @param maxTimeThreshold the max wait-time in nanoseconds
+     * @param minTimeForParking the min wait-time in nanoseconds
+     * @param condition the given {@link BooleanSupplier condition}
+     * @return the time spent parking (so the total wait-time)
+     * @apiNote This method relies on {@link ThreadSecondarySeedHandler#parkSpeculatively(int, int, int)}.
+     * @author Telami
+     * @since 1.0.3
+     */
+    public static int parkWhile (final int maxTimeThreshold,
+                                 final int minTimeForParking,
+                                 final BooleanSupplier condition) {
+        //Hidden implementation...
+        return 0;
     }
 }

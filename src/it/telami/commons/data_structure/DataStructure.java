@@ -12,6 +12,7 @@ import it.telami.commons.data_structure.cache.Cache;
  * @see it.telami.commons.data_structure.queue.ConcurrentQueue ConcurrentQueue
  * @see Cache Cache
  * @see it.telami.commons.data_structure.buffer.NetworkBuffer NetworkBuffer
+ * @see it.telami.commons.data_structure.buffer.ContinuousNetworkBuffer ContinuousNetworkBuffer
  */
 public interface DataStructure {
     /**
