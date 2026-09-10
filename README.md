@@ -1,3 +1,10 @@
+# ❗ Disclaimer ❗
+
+I'm currently rewriting a huge part of the license system protocol and this is slowing down the product (TelLib, not these API) pubblication.
+The next release (1.0.3) will be published as soon as possible before releasing the product and will be finally usable in pair with the product.
+
+<br>
+
 # ❗ Important ❗
 
 This is the <b>public API</b>! <br>
@@ -16,6 +23,7 @@ The APIs offer a high range of utilities:
 <ul>
 <li>Custom Locks</li>
 <li>Efficient Thread Spinning and Parking utilities</li>
+<li>Fast Thread Pool</li>
 <li>High-Performance Cache</li>
 <li>Lock-Free Queue</li>
 <li>Zip and Jar file utilities</li>
@@ -24,7 +32,7 @@ The APIs offer a high range of utilities:
 <li>Cross-JVM Communication Channels</li>
 <li>Coherent Time Formatter</li>
 <li>Advanced Logging utilities</li>
-<li>Exclusive <a href="https://efficacious-mochi-0e3.notion.site/TelLib-s-License-System-2b0c7071c745807e9a17db7a15c021be">License System</a> API</li>
+<li>Exclusive <a href="http://tellib-info.telami.dpdns.org">License System</a> API</li>
 <li>Minecraft Inventory API</li>
 <li>Minecraft Color Formatter</li>
 <li>And many more coming in the future!</li>
