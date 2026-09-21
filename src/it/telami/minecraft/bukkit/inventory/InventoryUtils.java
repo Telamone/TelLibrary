@@ -316,9 +316,6 @@ public final class InventoryUtils {
      *                }
      *                } </pre>
      *                <p>
-     *                Alternatively, is preferred to use the already optimized {@link InventoryUtils#extractChances(ConfigurationSection, String) extractChances(...)}
-     *                function that will be supported in the premium version of a future release specified in its annotation {@link PlannedForFuture}.
-     *                </p>
      *                Using the example above, changing 'lastChance' to 1000,
      *                the percentages would look like this:
      *                <pre> {@code
@@ -340,22 +337,5 @@ public final class InventoryUtils {
             final Inventory inv) {
         //Hidden implementation...
         return null;
-    }
-
-    @PlannedForFuture
-    public static ChancePair extractChances (final ConfigurationSection cs,
-                                             final String inItemToPercentagePath) {
-        //When implementing this method, update the documentation above!
-        throw new UnsupportedOperationException();
-    }
-    //Waiting for project Valhalla :)
-    public static final class ChancePair {
-        public final long lastChance;
-        public final long[] chances;
-        private ChancePair (final long lastChance,
-                            final long[] chances) {
-            this.lastChance = lastChance;
-            this.chances = chances;
-        }
     }
 }
