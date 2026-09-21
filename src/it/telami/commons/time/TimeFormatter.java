@@ -1,8 +1,5 @@
 package it.telami.commons.time;
 
-import com.moandjiezana.toml.Toml;
-import org.bukkit.configuration.Configuration;
-
 /**
  * Class used for formatting time into string in a coherent way: excluding
  * unused units, using correctly the singular and plural, specifying the
@@ -63,33 +60,6 @@ public final class TimeFormatter {
             final String days,
             final String fromNumberSeparator,
             final String fromNextSeparator) {
-        //Hidden implementation...
-    }
-
-    /**
-     * Create a {@link TimeFormatter time formatter} from a given {@link Configuration configuration},
-     * eventually using the default values if the given path derivatives are not found as specified in
-     * {@link TimeFormatter#TimeFormatter() TimeFormatter}.
-     * @param config the given configuration
-     * @param path the given path
-     * @author Telami
-     * @since 1.0.0
-     */
-    //Bukkit
-    public TimeFormatter (final Configuration config, final String path) {
-        //Hidden implementation...
-    }
-    /**
-     * Create a {@link TimeFormatter time formatter} from a given {@link Toml configuration},
-     * eventually using the default values if the given path derivatives are not found as specified in
-     * {@link TimeFormatter#TimeFormatter() TimeFormatter}.
-     * @param config the given configuration
-     * @param path the given path
-     * @author Telami
-     * @since 1.0.0
-     */
-    //Velocity
-    public TimeFormatter (final Toml config, final String path) {
         //Hidden implementation...
     }
 
