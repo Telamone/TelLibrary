@@ -1,10 +1,12 @@
 package it.telami.minecraft.bukkit.inventory;
 
-import it.telami.annotations.PlannedForFuture;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Class used for creating and handling inventories in various ways. <br>
@@ -12,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Telami
  * @since 1.0.0
  */
+@SuppressWarnings("deprecation")
 public final class InventoryUtils {
     private InventoryUtils () {}
 
@@ -30,8 +33,30 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static <T extends InventoryTemplate> Inventory createInventory (final T template, final int page, final Player... players) {
-        //Hidden implementation...
-        return null;
+        return switch (template) {
+            case DynamicInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventory(t, players[0]);
+            }
+            case DynamicPagedInventoryTemplate t -> {
+                if (players == null || players.length == 0)
+                    throw new IllegalArgumentException("Player cannot be null!");
+                yield createInventory(t, page, players[0]);
+            }
+            case MultiDynamicInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventory(t, players);
+            }
+            case MultiDynamicPagedInventoryTemplate t -> {
+                if (players == null)
+                    throw new IllegalArgumentException("Players cannot be null!");
+                yield createInventory(t, page, players);
+            }
+            case PagedInventoryTemplate t -> createInventory(t, page);
+            case SimpleInventoryTemplate t -> createInventory(t);
+        };
     }
     /**
      * Does the same as {@link InventoryUtils#createInventory(InventoryTemplate, int, Player...)},
@@ -45,8 +70,14 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static <T extends InventoryTemplate> Inventory createInventoryUnchecked (final T template, final int page, final Player... players) {
-        //Hidden implementation...
-        return null;
+        return switch (template) {
+            case DynamicInventoryTemplate t -> createInventoryUnchecked(t, players[0]);
+            case DynamicPagedInventoryTemplate t ->  createInventoryUnchecked(t, page, players[0]);
+            case MultiDynamicInventoryTemplate t -> createInventoryUnchecked(t, players);
+            case MultiDynamicPagedInventoryTemplate t -> createInventoryUnchecked(t, page, players);
+            case PagedInventoryTemplate t -> createInventoryUnchecked(t, page);
+            case SimpleInventoryTemplate t -> createInventoryUnchecked(t);
+        };
     }
 
     /**
@@ -57,8 +88,9 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static Inventory createInventory (final SimpleInventoryTemplate template) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        return createInventoryUnchecked(template);
     }
     /**
      * Create a new inventory based on the given {@link SimpleInventoryTemplate template},
@@ -69,8 +101,9 @@ public final class InventoryUtils {
      * @since 1.0.0
      */
     public static Inventory createInventoryUnchecked (final SimpleInventoryTemplate template) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent());
+        return inv;
     }
     /**
      * Create a new inventory based on the given {@link DynamicInventoryTemplate template}
@@ -84,8 +117,11 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final DynamicInventoryTemplate template,
             final Player player) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        if (player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
+        return createInventoryUnchecked(template, player);
     }
     /**
      * Create a new inventory based on the given {@link DynamicInventoryTemplate template}
@@ -99,8 +135,9 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final DynamicInventoryTemplate template,
             final Player player) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent(player));
+        return inv;
     }
     /**
      * Create a new inventory based on the given {@link MultiDynamicInventoryTemplate template}
@@ -114,8 +151,11 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        if (players == null)
+            throw new IllegalArgumentException("Players cannot be null!");
+        return createInventoryUnchecked(template, players);
     }
     /**
      * Create a new inventory based on the given {@link MultiDynamicInventoryTemplate template}
@@ -129,8 +169,9 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final MultiDynamicInventoryTemplate template,
             final Player... players) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent(players));
+        return inv;
     }
     /**
      * Create a new inventory based on the given {@link PagedInventoryTemplate template}
@@ -144,8 +185,11 @@ public final class InventoryUtils {
     public static Inventory createInventory (
             final PagedInventoryTemplate template,
             final int page) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        if (page < 0)
+            throw new IllegalArgumentException("Page cannot be negative!");
+        return createInventoryUnchecked(template, page);
     }
     /**
      * Create a new inventory based on the given {@link PagedInventoryTemplate template}
@@ -159,8 +203,26 @@ public final class InventoryUtils {
     public static Inventory createInventoryUnchecked (
             final PagedInventoryTemplate template,
             final int page) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent(page));
+        int[] slots;
+        if (page > 0) {
+            slots = template.previousPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack prevI = template.previousPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, prevI);
+            }
+        }
+        if (page < template.lastPage()) {
+            slots = template.nextPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack nextI = template.nextPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, nextI);
+            }
+        }
+        return inv;
     }
     /**
      * Create a new inventory based on the given {@link DynamicPagedInventoryTemplate template},
@@ -176,8 +238,13 @@ public final class InventoryUtils {
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        if (page < 0)
+            throw new IllegalArgumentException("Page cannot be negative!");
+        if (player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
+        return createInventoryUnchecked(template, page, player);
     }
     /**
      * Create a new inventory based on the given {@link DynamicPagedInventoryTemplate template},
@@ -193,8 +260,26 @@ public final class InventoryUtils {
             final DynamicPagedInventoryTemplate template,
             final int page,
             final Player player) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent(page, player));
+        int[] slots;
+        if (page > 0) {
+            slots = template.previousPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack prevI = template.previousPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, prevI);
+            }
+        }
+        if (page < template.lastPage()) {
+            slots = template.nextPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack nextI = template.nextPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, nextI);
+            }
+        }
+        return inv;
     }
     /**
      * Create a new inventory based on the given {@link MultiDynamicPagedInventoryTemplate template},
@@ -210,8 +295,13 @@ public final class InventoryUtils {
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
             final Player... players) {
-        //Hidden implementation...
-        return null;
+        if (template == null)
+            throw new IllegalArgumentException("Template cannot be null!");
+        if (page < 0)
+            throw new IllegalArgumentException("Page cannot be negative!");
+        if (players == null)
+            throw new IllegalArgumentException("Players cannot be null!");
+        return createInventoryUnchecked(template, page, players);
     }
     /**
      * Create a new inventory based on the given {@link MultiDynamicPagedInventoryTemplate template},
@@ -227,8 +317,26 @@ public final class InventoryUtils {
             final MultiDynamicPagedInventoryTemplate template,
             final int page,
             final Player... players) {
-        //Hidden implementation...
-        return null;
+        final Inventory inv = Bukkit.createInventory(template, template.numberOfLines() * 9, template.title());
+        inv.setContents(template.generateContent(page, players));
+        int[] slots;
+        if (page > 0) {
+            slots = template.previousPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack prevI = template.previousPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, prevI);
+            }
+        }
+        if (page < template.lastPage()) {
+            slots = template.nextPageSlots();
+            if (slots != null && slots.length > 0) {
+                final ItemStack nextI = template.nextPageItem();
+                for (final int p : slots)
+                    inv.setItem(p, nextI);
+            }
+        }
+        return inv;
     }
 
     /**
@@ -263,8 +371,26 @@ public final class InventoryUtils {
             final long lastChance,
             final ItemStack[] items,
             final Inventory inv) {
-        //Hidden implementation...
-        return null;
+        if (slots == null)
+            throw new IllegalArgumentException("Slots cannot be null!");
+        if (chances == null)
+            throw new IllegalArgumentException("Chances cannot be null!");
+        if (items == null)
+            throw new IllegalArgumentException("Items cannot be null!");
+        if (inv == null)
+            throw new IllegalArgumentException("Inventory cannot be null!");
+        if (chances.length != items.length)
+            throw new IllegalArgumentException("The number of chances and items must be equal!");
+        if (items.length < slots.length)
+            throw new IllegalArgumentException("The number of items must be higher than, or equal to, the number of slots!");
+        if (slots.length == 0)
+            return new int[0];
+        for (final int slot : slots)
+            if (slot < 0 || slot >= inv.getSize())
+                throw new IllegalArgumentException("The slot must be higher than, or equal to, 0 and lower than the inventory capacity!");
+        if (chances.length < 2)
+            throw new IllegalArgumentException("The number of chances and items must be higher than 1!");
+        return fillRandomlyUnchecked(slots, chances, lastChance, items, inv);
     }
     /**
      * Fill the slots (in range from 0 to {@link Inventory#getSize() inv.getSize()}) of a given
@@ -335,7 +461,40 @@ public final class InventoryUtils {
             final long lastChance,
             final ItemStack[] items,
             final Inventory inv) {
-        //Hidden implementation...
-        return null;
+        final int tl;
+        final int[] t = new int[tl = slots.length];
+        int i;
+        if (tl != (i = 0)) {
+            final int trick = chances.length - 2 | 0x80000000;
+            int adj;
+            int si;
+            long r;
+            //Avoids creating new randoms every time!
+            final Random rand = ThreadLocalRandom.current();
+            do {
+                f: for (;;) {
+                    r = rand.nextLong(lastChance);
+                    si = (trick ^ 0x80000000) + 2 >> 1;
+                    adj = si;
+                    while (trick - si < trick) {
+                        if (r > chances[si])
+                            si += (adj = (adj >> 1) + (adj & 1));
+                        else if (r > chances[si - 1])
+                            break;
+                        else
+                            si -= (adj = (adj >> 1) + (adj & 1));
+                    }
+                    adj = 0;
+                    //Convenient because the number of slots is very low!
+                    if (adj < i) do
+                        if (t[adj] == si)
+                            continue f;
+                    while (++adj != i);
+                    break;
+                }
+                inv.setItem(slots[i], items[t[i] = si]);
+            } while (++i != tl);
+        }
+        return t;
     }
 }
